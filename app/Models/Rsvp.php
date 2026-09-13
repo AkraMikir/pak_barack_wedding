@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\RsvpFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Rsvp extends Model
 {
@@ -17,6 +18,7 @@ class Rsvp extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'guest_id',
         'guest_name',
         'status_hadir',
         'jumlah_rombongan',
@@ -31,4 +33,9 @@ class Rsvp extends Model
     protected $casts = [
         'jumlah_rombongan' => 'integer',
     ];
+
+    public function guest(): BelongsTo
+    {
+        return $this->belongsTo(Guest::class);
+    }
 }

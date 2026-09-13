@@ -14,7 +14,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="overflow-x-hidden" style="background-color:#FFFCF7;">
+<body class="overflow-x-hidden overflow-hidden" style="background-color:#FFFCF7;" @if(isset($guest) && $guest) data-guest-id="{{ $guest->id }}" @endif>
 
 {{-- ════════════════════════════════════════════════════
      COVER OVERLAY (Section 1 – Hero)
@@ -61,7 +61,7 @@
         </p>
 
         {{-- Card tamu undangan --}}
-        <div class="relative z-10 w-full max-w-xs mb-6 rounded"
+        <div class="relative z-10 w-full rounded-2xl mb-4 text-center"
              style="background:rgba(240,228,206,0.45);border:1px solid rgba(161,120,57,0.35);backdrop-filter:blur(2px);padding:20px 16px;border-top:none;border-bottom:none;">
             <p class="uppercase tracking-widest text-center mb-1"
                style="font-family:'Cinzel',serif;font-size:10px;color:#6B4D38;letter-spacing:0.22em;">
@@ -69,7 +69,7 @@
             </p>
             <p class="text-center font-bold"
                style="font-family:'Playfair Display',serif;font-size:20px;color:#3A2517;">
-                {{ request()->query('to', 'Tamu Undangan') }}
+                {{ isset($guest) && $guest ? $guest->name : request()->query('to', 'Tamu Undangan') }}
             </p>
             <p class="text-center italic mt-1"
                style="font-family:'Playfair Display',serif;font-size:10px;color:rgba(107,77,56,0.65);">
@@ -159,47 +159,43 @@
             </p>
         </div>
 
-        {{-- Wayang Karakter Berdampingan --}}
-        <div class="flex items-flex-end justify-center gap-4 w-full" style="align-items:flex-end;">
+        {{-- Pasangan Mempelai Berdampingan --}}
+        <div class="flex items-start justify-center gap-3 w-full">
 
             {{-- Mempelai Wanita --}}
-            <div data-scroll class="reveal-left delay-100 flex flex-col items-center" style="width:128px;">
-                <div style="height:256px;display:flex;align-items:flex-end;justify-content:center;">
-                    <img src="https://www.figma.com/img/{{ '7cc24d15e7d17075dbc79500643b0ea0c8f551e9' }}"
+            <div data-scroll class="reveal-left delay-100 flex flex-col items-center flex-1 max-w-[155px]">
+                <div class="w-full overflow-hidden shadow-xs" style="height:270px;border-top-left-radius:90px;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0;border:1px solid rgba(161,120,57,0.4);background:rgba(161,120,57,0.08);">
+                    <img src="{{ !empty($fotoWanita) ? asset('storage/' . $fotoWanita) : 'https://www.figma.com/img/7cc24d15e7d17075dbc79500643b0ea0c8f551e9' }}"
                          onerror="this.style.background='rgba(161,120,57,0.15)'"
-                         class="photo-wanita" style="width:114px;height:256px;" alt="Sulastri">
+                         class="w-full h-full object-cover object-top" alt="Sulastri">
                 </div>
                 <p class="mt-3" style="font-family:'Great Vibes',cursive;font-size:36px;color:#362B24;">Sulastri</p>
                 <p style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.1em;">( Astri )</p>
-                <div class="mt-1 text-center">
-                    <p class="text-xs" style="font-family:'Plus Jakarta Sans',sans-serif;color:#6E5B4F;">Putri dari</p>
-                    <p class="text-xs font-medium" style="font-family:'Plus Jakarta Sans',sans-serif;color:#4A3B32;">Bapak Yasmudin</p>
-                    <p class="text-xs" style="font-family:'Plus Jakarta Sans',sans-serif;color:#6E5B4F;">&amp;</p>
-                    <p class="text-xs font-medium" style="font-family:'Plus Jakarta Sans',sans-serif;color:#4A3B32;">Ibu Rasiwen</p>
+                <div class="mt-1 text-center min-h-[55px] flex flex-col justify-start">
+                    <p class="text-xs" style="font-family:'Plus Jakarta Sans',sans-serif;color:#6E5B4F;">Putri dari Pasangan:</p>
+                    <p class="text-xs font-medium leading-tight" style="font-family:'Plus Jakarta Sans',sans-serif;color:#4A3B32;">Bpk. Yasmudin &amp;<br>Ibu Rasiwen</p>
                 </div>
             </div>
 
             {{-- Ampersand tengah --}}
-            <div data-scroll class="reveal-fade delay-300 flex flex-col items-center" style="width:52px;">
-                <div class="gold-divider-v" style="height:48px;margin-bottom:8px;"></div>
-                <p style="font-family:'Great Vibes',cursive;font-size:48px;color:#84683A;line-height:1;">&amp;</p>
-                <div class="gold-divider-v" style="height:48px;margin-top:8px;"></div>
+            <div data-scroll class="reveal-fade delay-300 flex flex-col items-center justify-center flex-shrink-0 pt-10" style="width:36px;">
+                <div class="gold-divider-v" style="height:70px;margin-bottom:8px;"></div>
+                <p style="font-family:'Great Vibes',cursive;font-size:42px;color:#84683A;line-height:1;">&amp;</p>
+                <div class="gold-divider-v" style="height:70px;margin-top:8px;"></div>
             </div>
 
             {{-- Mempelai Pria --}}
-            <div data-scroll class="reveal-right delay-100 flex flex-col items-center" style="width:128px;">
-                <div style="height:256px;display:flex;align-items:flex-end;justify-content:center;">
-                    <img src="https://www.figma.com/img/{{ '7cc24d15e7d17075dbc79500643b0ea0c8f551e9' }}"
+            <div data-scroll class="reveal-right delay-100 flex flex-col items-center flex-1 max-w-[155px]">
+                <div class="w-full overflow-hidden shadow-xs" style="height:270px;border-top-right-radius:90px;border-top-left-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0;border:1px solid rgba(161,120,57,0.4);background:rgba(161,120,57,0.08);">
+                    <img src="{{ !empty($fotoPria) ? asset('storage/' . $fotoPria) : 'https://www.figma.com/img/7cc24d15e7d17075dbc79500643b0ea0c8f551e9' }}"
                          onerror="this.style.background='rgba(161,120,57,0.15)'"
-                         class="photo-pria" style="width:113px;height:256px;" alt="Ridho">
+                         class="w-full h-full object-cover object-top" alt="Ridho">
                 </div>
                 <p class="mt-3" style="font-family:'Great Vibes',cursive;font-size:36px;color:#362B24;">Ridho</p>
                 <p style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.1em;">( Ridho )</p>
-                <div class="mt-1 text-center">
-                    <p class="text-xs" style="font-family:'Plus Jakarta Sans',sans-serif;color:#6E5B4F;">Putra dari</p>
-                    <p class="text-xs font-medium" style="font-family:'Plus Jakarta Sans',sans-serif;color:#4A3B32;">Bapak Wahyu Darma Putra</p>
-                    <p class="text-xs" style="font-family:'Plus Jakarta Sans',sans-serif;color:#6E5B4F;">&amp;</p>
-                    <p class="text-xs font-medium" style="font-family:'Plus Jakarta Sans',sans-serif;color:#4A3B32;">Ibu Yeni Handayani</p>
+                <div class="mt-1 text-center min-h-[55px] flex flex-col justify-start">
+                    <p class="text-xs" style="font-family:'Plus Jakarta Sans',sans-serif;color:#6E5B4F;">Putra dari Pasangan:</p>
+                    <p class="text-xs font-medium leading-tight" style="font-family:'Plus Jakarta Sans',sans-serif;color:#4A3B32;">Bpk. Wahyu Darma Putra (alm)<br>&amp; Ibu Yeni Handayani</p>
                 </div>
             </div>
         </div>
@@ -218,47 +214,61 @@
                  class="w-full h-full object-cover opacity-60" alt="">
         </div>
 
-        <div class="px-6 py-8">
-            <p data-scroll class="reveal-up uppercase tracking-widest mb-1"
-               style="font-family:'Cinzel',serif;font-size:10px;color:#84683A;letter-spacing:0.25em;">
+        @php
+            try {
+                $eventDate = \Carbon\Carbon::parse($weddingDate)->locale('id');
+            } catch (\Exception $e) {
+                $eventDate = \Carbon\Carbon::parse('2026-10-23T08:00')->locale('id');
+            }
+            $formattedWeddingDate = $eventDate->isoFormat('dddd, D MMMM Y');
+            $startUtc = $eventDate->copy()->setTimezone('UTC')->format('Ymd\THis\Z');
+            $endUtc = $eventDate->copy()->addHours(6)->setTimezone('UTC')->format('Ymd\THis\Z');
+            $calendarUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' . urlencode('Pernikahan Astri & Ridho') . '&dates=' . $startUtc . '/' . $endUtc . '&details=' . urlencode('Akad Nikah & Resepsi Pernikahan Sulastri & Ridho Iriano Sudarmazena') . '&location=' . urlencode('Jln. Lombok RT 05 RW 01, Ds. Mergawati, Kec. Kroya, Kab. Cilacap');
+        @endphp
+
+        <div class="px-6 py-10 text-center">
+            <p data-scroll class="reveal-up uppercase tracking-widest mb-2 text-center"
+               style="font-family:'Cinzel',serif;font-size:11px;color:#8B6C3F;letter-spacing:0.28em;">
                 MENUJU HARI BAHAGIA
             </p>
-            <h2 data-scroll class="reveal-up delay-100 font-bold mb-5"
-                style="font-family:'Playfair Display',serif;font-size:20px;color:#362B24;">
-                Jum'at, 23 Oktober 2026
+            <h2 data-scroll class="reveal-up delay-100 font-bold mb-8 text-center"
+                style="font-family:'Playfair Display',serif;font-size:24px;color:#2F241D;letter-spacing:0.01em;">
+                {{ $formattedWeddingDate }}
             </h2>
 
             {{-- Countdown boxes --}}
-            <div data-scroll class="reveal-up delay-200 flex gap-3 w-full max-w-xs mx-auto mb-6">
-                <div class="countdown-box rounded">
+            <div data-scroll data-countdown-container data-target-date="{{ $weddingDate }}" class="reveal-up delay-200 flex gap-2.5 w-full max-w-sm mx-auto mb-8">
+                <div class="countdown-box rounded-xs">
                     <span id="cd-days" class="countdown-number">00</span>
-                    <span class="uppercase tracking-widest" style="font-family:'Cinzel',serif;font-size:9px;color:#6E5B4F;letter-spacing:0.1em;">HARI</span>
+                    <span class="uppercase tracking-widest mt-1" style="font-family:'Cinzel',serif;font-size:9.5px;color:#7A6855;letter-spacing:0.15em;">HARI</span>
                 </div>
-                <div class="countdown-box rounded">
+                <div class="countdown-box rounded-xs">
                     <span id="cd-hours" class="countdown-number">00</span>
-                    <span class="uppercase tracking-widest" style="font-family:'Cinzel',serif;font-size:9px;color:#6E5B4F;letter-spacing:0.1em;">JAM</span>
+                    <span class="uppercase tracking-widest mt-1" style="font-family:'Cinzel',serif;font-size:9.5px;color:#7A6855;letter-spacing:0.15em;">JAM</span>
                 </div>
-                <div class="countdown-box rounded">
+                <div class="countdown-box rounded-xs">
                     <span id="cd-mins" class="countdown-number">00</span>
-                    <span class="uppercase tracking-widest" style="font-family:'Cinzel',serif;font-size:9px;color:#6E5B4F;letter-spacing:0.1em;">MENIT</span>
+                    <span class="uppercase tracking-widest mt-1" style="font-family:'Cinzel',serif;font-size:9.5px;color:#7A6855;letter-spacing:0.15em;">MENIT</span>
                 </div>
-                <div class="countdown-box rounded">
+                <div class="countdown-box rounded-xs">
                     <span id="cd-secs" class="countdown-number">00</span>
-                    <span class="uppercase tracking-widest" style="font-family:'Cinzel',serif;font-size:9px;color:#6E5B4F;letter-spacing:0.1em;">DETIK</span>
+                    <span class="uppercase tracking-widest mt-1" style="font-family:'Cinzel',serif;font-size:9.5px;color:#7A6855;letter-spacing:0.15em;">DETIK</span>
                 </div>
             </div>
 
             {{-- Simpan ke kalender --}}
             <div data-scroll class="reveal-up delay-300 flex justify-center">
-                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Pernikahan+Astri+%26+Ridho&dates=20261023T010000Z/20261023T060000Z&details=Akad+Nikah+%26+Resepsi+Pernikahan+Sulastri+%26+Ridho+Iriano+Sudarmazena&location=Jln.+Lombok+RT05+RW01+Ds.+Mergawati+Kec.+Kroya+Kab.+Cilacap"
+                <a href="{{ $calendarUrl }}"
                    target="_blank"
-                   class="inline-flex items-center gap-2 px-5 py-2 rounded-full uppercase tracking-wide hover:opacity-80 transition-opacity"
-                   style="border:1px solid #84683A;font-family:'Cinzel',serif;font-size:11px;color:#362B24;letter-spacing:0.05em;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                        <line x1="16" y1="2" x2="16" y2="6"/>
-                        <line x1="8" y1="2" x2="8" y2="6"/>
-                        <line x1="3" y1="10" x2="21" y2="10"/>
+                   class="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full uppercase tracking-wider hover:bg-stone-100 transition-all active:scale-95 shadow-2xs"
+                   style="border:1.5px solid #84683A;background-color:#FAF6EE;font-family:'Cinzel',serif;font-size:11px;font-weight:600;color:#2F241D;letter-spacing:0.12em;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2F241D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                        <line x1="10" y1="16" x2="14" y2="16"></line>
+                        <line x1="12" y1="14" x2="12" y2="18"></line>
                     </svg>
                     SIMPAN KE KALENDER
                 </a>
@@ -409,6 +419,9 @@
 
         <form id="rsvp-form" data-scroll class="reveal-up delay-300 flex flex-col gap-4" novalidate>
             @csrf
+            @if(isset($guest) && $guest)
+                <input type="hidden" name="guest_id" value="{{ $guest->id }}">
+            @endif
 
             {{-- Nama Tamu --}}
             <div>
@@ -417,9 +430,10 @@
                     Nama
                 </label>
                 <input type="text" name="guest_name"
-                       value="{{ request()->query('to') }}"
+                       value="{{ isset($guest) && $guest ? $guest->name : request()->query('to') }}"
                        placeholder="Nama lengkap Anda"
                        class="form-input"
+                       {{ isset($guest) && $guest ? 'readonly' : '' }}
                        required>
             </div>
 
@@ -431,14 +445,14 @@
                 </label>
                 <div class="flex gap-3">
                     <label class="radio-option">
-                        <input type="radio" name="status_hadir" value="Hadir" checked class="sr-only">
+                        <input type="radio" name="status_hadir" value="Hadir" {{ (!isset($guest) || !$guest->rsvp || $guest->rsvp->status_hadir === 'Hadir') ? 'checked' : '' }} class="sr-only">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#84683A" stroke-width="2">
                             <polyline points="20 6 9 17 4 12"/>
                         </svg>
                         <span style="font-family:'Cinzel',serif;font-size:11px;color:#362B24;">Hadir</span>
                     </label>
                     <label class="radio-option">
-                        <input type="radio" name="status_hadir" value="Tidak" class="sr-only">
+                        <input type="radio" name="status_hadir" value="Tidak" {{ (isset($guest) && $guest->rsvp && $guest->rsvp->status_hadir === 'Tidak') ? 'checked' : '' }} class="sr-only">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#84683A" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                         </svg>
@@ -448,13 +462,13 @@
             </div>
 
             {{-- Jumlah Rombongan --}}
-            <div id="field-rombongan">
+            <div id="field-rombongan" style="{{ (isset($guest) && $guest->rsvp && $guest->rsvp->status_hadir === 'Tidak') ? 'display:none;' : '' }}">
                 <label class="block mb-1 uppercase tracking-wider text-xs"
                        style="font-family:'Cinzel',serif;font-size:10px;color:#84683A;letter-spacing:0.1em;">
                     Jumlah Rombongan
                 </label>
                 <input type="number" name="jumlah_rombongan"
-                       min="1" max="50" value="1"
+                       min="1" max="50" value="{{ isset($guest) && $guest->rsvp && $guest->rsvp->jumlah_rombongan ? $guest->rsvp->jumlah_rombongan : 1 }}"
                        class="form-input" style="max-width:120px;">
             </div>
 
@@ -466,7 +480,7 @@
                 </label>
                 <textarea name="wishes" rows="3"
                           placeholder="Tulis ucapan dan doa terbaik Anda..."
-                          class="form-input resize-none"></textarea>
+                          class="form-input resize-none">{{ isset($guest) && $guest->rsvp ? $guest->rsvp->wishes : '' }}</textarea>
             </div>
 
             {{-- Submit --}}
@@ -624,39 +638,55 @@
                  class="w-full h-full object-cover opacity-70" alt="">
         </div>
 
-        <p data-scroll class="reveal-up uppercase tracking-widest mb-2"
-           style="font-family:'Cinzel',serif;font-size:10px;color:#84683A;letter-spacing:0.25em;">
-            TURUT MENGUNDANG
+        <p data-scroll class="reveal-up uppercase tracking-widest mb-3"
+           style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.25em;">
+            TURUT MENGUNDANG :
         </p>
 
-        <p data-scroll class="reveal-up delay-100 text-sm mb-8 leading-relaxed"
-           style="font-family:'Plus Jakarta Sans',sans-serif;color:#6E5B4F;">
-            Keluarga Besar Bapak Yasmudin &amp; Ibu Rasiwen<br>
-            Keluarga Besar Bapak Wahyu Darma Putra &amp; Ibu Yeni Handayani
-        </p>
-
-        <div data-scroll class="reveal-scale gold-divider mb-6" style="width:128px;"></div>
-
-        <p data-scroll class="reveal-fade delay-200 italic mb-3"
-           style="font-family:'Playfair Display',serif;font-size:14px;color:#6E5B4F;">
-            Merupakan suatu kehormatan dan kebahagiaan bagi kami<br>
-            apabila Bapak/Ibu/Saudara/i berkenan hadir<br>
-            untuk memberikan doa restu kepada kami.
-        </p>
-
-        {{-- Dekorasi bunga --}}
-        <div class="pointer-events-none my-4" style="width:93px;height:86px;" data-scroll data-scroll-speed="-0.5">
-            <img src="https://www.figma.com/img/{{ '5fc4f6487203810719709f905c982c4822ceb697' }}"
-                 onerror="this.style.display='none'"
-                 class="w-full h-full object-contain opacity-80" alt="">
+        <div data-scroll class="reveal-up delay-100 mb-8 leading-relaxed text-center"
+           style="font-family:'Playfair Display',serif;font-size:15px;color:#3A2517;line-height:1.75;">
+            @if(isset($guest) && $guest && $guest->custom_turut_mengundang)
+                {!! nl2br(e($guest->custom_turut_mengundang)) !!}
+            @else
+                Sanwakyo<br>
+                Kasbani<br>
+                Kasmadi<br>
+                Sirin <span class="italic">(penjual bekatul)</span><br>
+                Demang <span class="italic">(penjual kambing)</span>
+            @endif
         </div>
 
-        <h2 data-scroll class="reveal-up delay-300 mb-1"
-            style="font-family:'Great Vibes',cursive;font-size:52px;color:#3A2517;">
+        <div data-scroll class="reveal-scale gold-divider mb-8" style="width:140px;"></div>
+
+        <p data-scroll class="reveal-fade delay-200 italic mb-5 leading-relaxed text-center"
+           style="font-family:'Playfair Display',serif;font-size:14px;color:#6E5B4F;line-height:1.6;">
+            Merupakan suatu kehormatan dan kebahagiaan bagi kami<br>
+            apabila Bapak/Ibu/Saudara/i berkenan hadir<br>
+            untuk memberikan do'a restu.
+        </p>
+
+        <p data-scroll class="reveal-up delay-250 italic font-bold mb-8 text-center"
+           style="font-family:'Playfair Display',serif;font-size:15px;color:#3A2517;">
+            Wassalamu'alaikum Warahmatullahi Wabarakatuh
+        </p>
+
+        <p data-scroll class="reveal-up delay-300 uppercase tracking-widest mb-2"
+           style="font-family:'Cinzel',serif;font-size:10px;color:#84683A;letter-spacing:0.25em;">
+            KAMI YANG BERBAHAGIA:
+        </p>
+
+        <p data-scroll class="reveal-up delay-350 font-bold uppercase tracking-wider mb-6 leading-relaxed"
+           style="font-family:'Cinzel',serif;font-size:11px;color:#3A2517;letter-spacing:0.04em;line-height:1.6;">
+            KELUARGA BPK. YASMUDIN &amp; IBU RASIWEN<br>
+            KELUARGA BPK. WAHYU DARMA PUTRA (ALM) &amp; IBU YENI HANDAYANI
+        </p>
+
+        <h2 data-scroll class="reveal-up delay-400 mb-1"
+            style="font-family:'Great Vibes',cursive;font-size:54px;color:#3A2517;">
             Astri &amp; Ridho
         </h2>
 
-        <p data-scroll class="reveal-up delay-400 uppercase tracking-widest"
+        <p data-scroll class="reveal-up delay-450 uppercase tracking-widest"
            style="font-family:'Cinzel',serif;font-size:10px;color:#84683A;letter-spacing:0.2em;">
             23 OKTOBER 2026
         </p>
@@ -682,25 +712,25 @@
     <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 z-40 flex items-center justify-around"
          style="width:100%;max-width:412px;background:rgba(250,245,236,0.95);border-top:1px solid rgba(223,211,189,0.7);backdrop-filter:blur(12px);padding:8px 0;">
 
-        <a data-scroll-to="#section-mempelai" class="bottom-nav-item" href="#">
+        <a data-scroll-to-target="#section-mempelai" class="bottom-nav-item" href="#section-mempelai">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
             </svg>
             Mempelai
         </a>
-        <a data-scroll-to="#section-acara" class="bottom-nav-item" href="#">
+        <a data-scroll-to-target="#section-acara" class="bottom-nav-item" href="#section-acara">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
             Acara
         </a>
-        <a data-scroll-to="#section-rsvp" class="bottom-nav-item" href="#">
+        <a data-scroll-to-target="#section-rsvp" class="bottom-nav-item" href="#section-rsvp">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
             RSVP
         </a>
-        <a data-scroll-to="#section-amplop" class="bottom-nav-item" href="#">
+        <a data-scroll-to-target="#section-amplop" class="bottom-nav-item" href="#section-amplop">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><polyline points="1,4 12,13 23,4"/>
             </svg>

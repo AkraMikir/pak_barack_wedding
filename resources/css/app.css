@@ -148,21 +148,21 @@ html.has-scroll-dragging {
 
 /* ── Countdown Boxes ──────────────────────────────────── */
 .countdown-box {
-    background: rgba(250, 245, 236, 0.6);
-    border-bottom: 2px solid #84683A;
-    padding: 10px 0 12px;
+    background: rgba(247, 243, 235, 0.45);
+    border-bottom: 2px solid #947a50;
+    padding: 16px 4px 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex: 1;
 }
 
 .countdown-number {
     font-family: 'Playfair Display', serif;
-    font-size: 2rem;
+    font-size: 2.25rem;
     font-weight: 700;
-    color: #362B24;
+    color: #2F241D;
     line-height: 1;
 }
 

@@ -1,8 +1,15 @@
 import LocomotiveScroll from 'locomotive-scroll';
 import 'locomotive-scroll/dist/locomotive-scroll.css';
 
+// ── Disable browser automatic scroll restoration ──────────
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
 // ── Wait for DOM ready ────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    window.scrollTo(0, 0);
 
     // ── Locomotive Scroll Init ────────────────────────────
     const scrollContainer = document.querySelector('[data-scroll-container]');
@@ -18,7 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
             class: 'is-inview',
             tablet: { smooth: true, breakpoint: 1024 },
             smartphone: { smooth: false },
+            autoStart: false,
         });
+
+        locoScroll.scrollTo(0, { immediate: true });
 
         // Update on resize
         window.addEventListener('resize', () => locoScroll.update());
@@ -29,20 +39,64 @@ document.addEventListener('DOMContentLoaded', () => {
     const bukaBtns      = document.querySelectorAll('[data-buka-undangan]');
     const mainContent   = document.getElementById('main-content');
 
+    if (coverOverlay) {
+        const preventGhostScroll = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        };
+        coverOverlay.addEventListener('wheel', preventGhostScroll, { passive: false });
+        coverOverlay.addEventListener('touchmove', preventGhostScroll, { passive: false });
+    }
+
     bukaBtns.forEach(btn => {
         btn.addEventListener('click', () => {
+            const guestId = document.body.dataset.guestId;
+            if (guestId) {
+                fetch(`/guest/${guestId}/open`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'Accept': 'application/json',
+                    },
+                }).catch(() => {});
+            }
+
             if (coverOverlay) {
                 coverOverlay.classList.add('hidden-overlay');
+                document.body.classList.remove('overflow-hidden');
+
+                window.scrollTo(0, 0);
+
+                if (locoScroll) {
+                    locoScroll.start();
+                    locoScroll.scrollTo(0, { immediate: true });
+                    locoScroll.scrollTo('#section-ayat', { immediate: true });
+                    locoScroll.update();
+                }
+
                 setTimeout(() => {
                     coverOverlay.style.display = 'none';
-                    if (locoScroll) locoScroll.update();
+                    if (locoScroll) {
+                        locoScroll.scrollTo('#section-ayat', { immediate: true });
+                        locoScroll.update();
+                    }
                 }, 800);
             }
         });
     });
 
     // ── Countdown Timer ───────────────────────────────────
-    const targetDate = new Date('2026-10-23T08:00:00+07:00');
+    const cdContainer = document.querySelector('[data-countdown-container]');
+    const rawTargetDate = cdContainer?.dataset?.targetDate;
+    let targetDate;
+    if (rawTargetDate) {
+        targetDate = new Date(rawTargetDate);
+        if (isNaN(targetDate.getTime())) {
+            targetDate = new Date('2026-10-23T08:00:00+07:00');
+        }
+    } else {
+        targetDate = new Date('2026-10-23T08:00:00+07:00');
+    }
 
     const daysEl    = document.getElementById('cd-days');
     const hoursEl   = document.getElementById('cd-hours');
@@ -223,14 +277,16 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWishes();
 
     // ── Bottom Nav Scroll To Section ─────────────────────
-    document.querySelectorAll('[data-scroll-to]').forEach(link => {
+    document.querySelectorAll('[data-scroll-to-target]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            const target = link.dataset.scrollTo;
-            if (locoScroll) {
-                locoScroll.scrollTo(target, { offset: -20, duration: 1200 });
-            } else {
-                document.querySelector(target)?.scrollIntoView({ behavior: 'smooth' });
+            const target = link.dataset.scrollToTarget || link.getAttribute('href');
+            if (target && target.startsWith('#')) {
+                if (locoScroll) {
+                    locoScroll.scrollTo(target, { offset: -20, duration: 1.2 });
+                } else {
+                    document.querySelector(target)?.scrollIntoView({ behavior: 'smooth' });
+                }
             }
         });
     });
