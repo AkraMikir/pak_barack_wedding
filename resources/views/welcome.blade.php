@@ -526,11 +526,18 @@
     {{-- ────────────────────────────────────────────────
          SECTION 3: MEMPELAI PROFILES
          ──────────────────────────────────────────────── --}}
-    <section id="section-mempelai" data-scroll-section class="px-6 py-8 flex flex-col items-center text-center"
+    <section id="section-mempelai" data-scroll-section class="relative px-6 py-8 flex flex-col items-center text-center overflow-hidden"
              style="background-color:#FFFCF7;">
 
+        {{-- Background Motif Pasangan --}}
+        <div class="absolute inset-0 pointer-events-none select-none z-0">
+            <img src="{{ asset('assets-website/pasangan-mempelai/backgroud-pasangan.svg') }}"
+                 class="w-full h-full object-cover select-none"
+                 alt="Background Pasangan">
+        </div>
+
         {{-- Header --}}
-        <div class="mb-8">
+        <div class="relative z-10 mb-8">
             <p data-scroll class="reveal-up uppercase tracking-widest mb-1"
                style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.25em;">
                 PASANGAN MEMPELAI
@@ -548,14 +555,25 @@
         </div>
 
         {{-- Pasangan Mempelai Berdampingan --}}
-        <div class="flex items-start justify-center gap-3 w-full">
+        <div class="relative z-10 flex items-start justify-center gap-3 w-full">
 
             {{-- Mempelai Wanita --}}
             <div data-scroll class="reveal-left delay-100 flex flex-col items-center flex-1 max-w-[155px]">
-                <div class="w-full overflow-hidden shadow-xs" style="height:270px;border-top-left-radius:90px;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0;border:1px solid rgba(161,120,57,0.4);background:rgba(161,120,57,0.08);">
-                    <img src="{{ !empty($fotoWanita) ? asset('storage/' . $fotoWanita) : 'https://www.figma.com/img/7cc24d15e7d17075dbc79500643b0ea0c8f551e9' }}"
-                         onerror="this.style.background='rgba(161,120,57,0.15)'"
-                         class="w-full h-full object-cover object-top" alt="Sulastri">
+                <div class="relative w-full">
+                    {{-- Ornamen Payung Kiri --}}
+                    <div class="absolute -top-6 -left-5 z-20 pointer-events-none select-none"
+                         style="width:62px;height:70px;">
+                        <img src="{{ asset('assets-website/pasangan-mempelai/payung-kiri-foto-mempelai.svg') }}"
+                             class="w-full h-auto object-contain select-none"
+                             alt="Ornamen Payung">
+                    </div>
+
+                    {{-- Frame Foto --}}
+                    <div class="w-full overflow-hidden shadow-xs relative z-10" style="height:270px;border-top-left-radius:90px;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0;border:1px solid rgba(161,120,57,0.4);background:rgba(161,120,57,0.08);">
+                        <img src="{{ !empty($fotoWanita) ? asset('storage/' . $fotoWanita) : 'https://www.figma.com/img/7cc24d15e7d17075dbc79500643b0ea0c8f551e9' }}"
+                             onerror="this.style.background='rgba(161,120,57,0.15)'"
+                             class="w-full h-full object-cover object-top" alt="Sulastri">
+                    </div>
                 </div>
                 <p class="mt-3" style="font-family:'Great Vibes',cursive;font-size:36px;color:#362B24;">Sulastri</p>
                 <p style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.1em;">( Astri )</p>
@@ -574,10 +592,21 @@
 
             {{-- Mempelai Pria --}}
             <div data-scroll class="reveal-right delay-100 flex flex-col items-center flex-1 max-w-[155px]">
-                <div class="w-full overflow-hidden shadow-xs" style="height:270px;border-top-right-radius:90px;border-top-left-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0;border:1px solid rgba(161,120,57,0.4);background:rgba(161,120,57,0.08);">
-                    <img src="{{ !empty($fotoPria) ? asset('storage/' . $fotoPria) : 'https://www.figma.com/img/7cc24d15e7d17075dbc79500643b0ea0c8f551e9' }}"
-                         onerror="this.style.background='rgba(161,120,57,0.15)'"
-                         class="w-full h-full object-cover object-top" alt="Ridho">
+                <div class="relative w-full">
+                    {{-- Ornamen Keris Kanan --}}
+                    <div class="absolute -top-7 -right-4 z-20 pointer-events-none select-none"
+                         style="width:58px;height:79px;">
+                        <img src="{{ asset('assets-website/pasangan-mempelai/keris-kanan-foto-mempelai.svg') }}"
+                             class="w-full h-auto object-contain select-none"
+                             alt="Ornamen Keris">
+                    </div>
+
+                    {{-- Frame Foto --}}
+                    <div class="w-full overflow-hidden shadow-xs relative z-10" style="height:270px;border-top-right-radius:90px;border-top-left-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0;border:1px solid rgba(161,120,57,0.4);background:rgba(161,120,57,0.08);">
+                        <img src="{{ !empty($fotoPria) ? asset('storage/' . $fotoPria) : 'https://www.figma.com/img/7cc24d15e7d17075dbc79500643b0ea0c8f551e9' }}"
+                             onerror="this.style.background='rgba(161,120,57,0.15)'"
+                             class="w-full h-full object-cover object-top" alt="Ridho">
+                    </div>
                 </div>
                 <p class="mt-3" style="font-family:'Great Vibes',cursive;font-size:36px;color:#362B24;">Ridho</p>
                 <p style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.1em;">( Ridho )</p>
@@ -601,21 +630,38 @@
             } catch (\Exception $e) {
                 $eventDate = \Carbon\Carbon::parse('2026-10-23T08:00')->locale('id');
             }
-            $formattedWeddingDate = $eventDate->isoFormat('dddd, D MMMM Y');
+            $formattedWeddingDate = str_replace('Jumat', "Jum'at", $eventDate->isoFormat('dddd, D MMMM Y'));
             $startUtc = $eventDate->copy()->setTimezone('UTC')->format('Ymd\THis\Z');
             $endUtc = $eventDate->copy()->addHours(6)->setTimezone('UTC')->format('Ymd\THis\Z');
             $calendarUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' . urlencode('Pernikahan Astri & Ridho') . '&dates=' . $startUtc . '/' . $endUtc . '&details=' . urlencode('Akad Nikah & Resepsi Pernikahan Sulastri & Ridho Iriano Sudarmazena') . '&location=' . urlencode('Jln. Lombok RT 05 RW 01, Ds. Mergawati, Kec. Kroya, Kab. Cilacap');
         @endphp
 
         <div class="px-6 pt-7 pb-8 text-center">
-            <p data-scroll class="reveal-up uppercase tracking-widest mb-2 text-center"
-               style="font-family:'Cinzel',serif;font-size:11px;color:#8B6C3F;letter-spacing:0.28em;">
-                MENUJU HARI BAHAGIA
-            </p>
-            <h2 data-scroll class="reveal-up delay-100 font-bold mb-8 text-center"
-                style="font-family:'Playfair Display',serif;font-size:24px;color:#2F241D;letter-spacing:0.01em;">
-                {{ $formattedWeddingDate }}
-            </h2>
+            {{-- Header with flanking flower ornaments --}}
+            <div class="relative w-full max-w-sm mx-auto mb-8">
+                {{-- Ornamen Bunga Kiri --}}
+                <div data-scroll class="reveal-left delay-100 absolute pointer-events-none select-none z-10"
+                     style="top: -14px; left: -8px; width: 57px;">
+                    <img src="{{ asset('assets-website/tanggal-main/bunga-kiri-tanggal.svg') }}"
+                         class="w-full h-auto object-contain" alt="ornamen bunga kiri">
+                </div>
+
+                {{-- Ornamen Bunga Kanan --}}
+                <div data-scroll class="reveal-right delay-100 absolute pointer-events-none select-none z-10"
+                     style="top: -16px; right: -2px; width: 55px;">
+                    <img src="{{ asset('assets-website/tanggal-main/bunga-kanan-tanggal.svg') }}"
+                         class="w-full h-auto object-contain" alt="ornamen bunga kanan">
+                </div>
+
+                <p data-scroll class="reveal-up uppercase tracking-widest mb-2 text-center"
+                   style="font-family:'Cinzel',serif;font-size:11px;color:#8B6C3F;letter-spacing:0.28em;">
+                    MENUJU HARI BAHAGIA
+                </p>
+                <h2 data-scroll class="reveal-up delay-100 font-bold text-center"
+                    style="font-family:'Playfair Display',serif;font-size:24px;color:#2F241D;letter-spacing:0.01em;">
+                    {{ $formattedWeddingDate }}
+                </h2>
+            </div>
 
             {{-- Countdown boxes --}}
             <div data-scroll data-countdown-container data-target-date="{{ $weddingDate }}" class="reveal-up delay-200 flex gap-2.5 w-full max-w-sm mx-auto mb-8">
@@ -663,7 +709,14 @@
     <section id="section-acara" data-scroll-section class="px-6 py-10 flex flex-col items-center"
              style="background-color:#FFFCF7;">
 
-        <p data-scroll class="reveal-up uppercase tracking-widest"
+        {{-- Ornamen Wayang & Gunungan Header Waktu & Lokasi --}}
+        <div data-scroll class="reveal-fade relative z-10 w-full flex justify-center mb-3 sm:mb-4 px-2">
+            <img src="{{ asset('assets-website/rangkaian-acara/border-waktu-lokasi.svg') }}"
+                 class="w-full max-w-[340px] sm:max-w-[360px] h-auto object-contain pointer-events-none select-none"
+                 alt="Ornamen Waktu & Lokasi">
+        </div>
+
+        <p data-scroll class="reveal-up uppercase tracking-widest text-center"
            style="font-family:'Cinzel',serif;font-size:10px;color:#84683A;letter-spacing:0.25em;">
             WAKTU &amp; LOKASI
         </p>
@@ -673,8 +726,17 @@
         </h2>
 
         {{-- Akad Nikah --}}
-        <div data-scroll class="reveal-up delay-200 w-full text-center pb-6"
+        <div data-scroll class="reveal-up delay-200 relative w-full text-center pb-6"
              style="border-bottom:1px solid #DFD3BD;">
+
+            {{-- Ornamen Cincin Kawin & Bantal di Kiri --}}
+            <div class="absolute -left-2 sm:left-0 top-0 pointer-events-none select-none z-10"
+                 style="width: 86px;">
+                <img src="{{ asset('assets-website/rangkaian-acara/cincin-waktu-lokasi.svg') }}"
+                     class="w-full h-auto object-contain select-none drop-shadow-xs"
+                     alt="Ornamen Cincin Akad Nikah">
+            </div>
+
             <p class="uppercase tracking-widest mb-1"
                style="font-family:'Cinzel',serif;font-size:12px;color:#84683A;letter-spacing:0.2em;">IJAB QABUL</p>
             <h3 class="font-bold" style="font-family:'Playfair Display',serif;font-size:20px;color:#362B24;">Akad Nikah</h3>
@@ -686,8 +748,17 @@
         </div>
 
         {{-- Resepsi --}}
-        <div data-scroll class="reveal-up delay-300 w-full text-center pt-8 pb-6"
+        <div data-scroll class="reveal-up delay-300 relative w-full text-center pt-8 pb-6"
              style="border-bottom:1px solid #DFD3BD;">
+
+            {{-- Ornamen Teko & Melati di Kanan --}}
+            <div class="absolute -right-2 sm:right-0 pointer-events-none select-none z-10"
+                 style="width: 72px; top: 46px;">
+                <img src="{{ asset('assets-website/rangkaian-acara/teko-resepsi.svg') }}"
+                     class="w-full h-auto object-contain select-none drop-shadow-xs"
+                     alt="Ornamen Teko Resepsi">
+            </div>
+
             <p class="uppercase tracking-widest mb-1"
                style="font-family:'Cinzel',serif;font-size:12px;color:#84683A;letter-spacing:0.2em;">WALIMATUL 'URSY</p>
             <h3 class="font-bold" style="font-family:'Playfair Display',serif;font-size:20px;color:#362B24;">Resepsi Pernikahan</h3>
