@@ -12,6 +12,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        @media (min-width: 768px) {
+            #cover-overlay {
+                align-items: flex-end !important;
+            }
+            #main-content {
+                margin-right: 0 !important;
+                margin-left: auto !important;
+            }
+            #cover-header-ornament {
+                left: auto !important;
+                right: 0 !important;
+                width: 412px;
+            }
+            #bottom-nav {
+                left: auto !important;
+                right: 0 !important;
+                transform: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="overflow-x-hidden overflow-hidden" style="background-color:#FFFCF7;" @if(isset($guest) && $guest) data-guest-id="{{ $guest->id }}" @endif>
@@ -200,7 +222,7 @@
     </style>
 
     {{-- Ornamen atas --}}
-    <div class="absolute top-0 left-0 right-0 pointer-events-none flex justify-center z-10">
+    <div id="cover-header-ornament" class="absolute top-0 left-0 right-0 pointer-events-none flex justify-center z-10">
         <img src="{{ asset('assets-website/header-landing.svg') }}"
              class="w-full max-w-[412px] h-auto object-contain anim-header-landing" alt="ornamen header">
     </div>
@@ -1038,7 +1060,7 @@
     {{-- ────────────────────────────────────────────────
          BOTTOM NAVIGATION
          ──────────────────────────────────────────────── --}}
-    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 z-40 flex items-center justify-around"
+    <nav id="bottom-nav" class="fixed bottom-0 left-1/2 -translate-x-1/2 z-40 flex items-center justify-around"
          style="width:100%;max-width:412px;background:rgba(250,245,236,0.95);border-top:1px solid rgba(223,211,189,0.7);backdrop-filter:blur(12px);padding:8px 0;">
 
         <a data-scroll-to-target="#section-mempelai" class="bottom-nav-item" href="#section-mempelai">
