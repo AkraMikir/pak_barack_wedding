@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 coverOverlay.classList.add('hidden-overlay');
                 document.body.classList.remove('overflow-hidden');
 
-                window.scrollTo(0, 0);
+
 
                 if (locoScroll) {
                     locoScroll.start();
