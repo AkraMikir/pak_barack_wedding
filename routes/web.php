@@ -20,4 +20,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::delete('/guests/{guest}', [GuestController::class, 'destroy'])->name('guests.destroy');
     Route::post('/settings/photos', [GuestController::class, 'updatePhotos'])->name('settings.photos');
     Route::post('/settings/countdown', [GuestController::class, 'updateCountdown'])->name('settings.countdown');
+    Route::post('/galleries', [GuestController::class, 'storeGallery'])->name('galleries.store');
+    Route::delete('/galleries/{gallery}', [GuestController::class, 'destroyGallery'])->name('galleries.destroy');
 });

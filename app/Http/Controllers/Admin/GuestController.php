@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Gallery;
 use App\Models\Guest;
 use App\Models\Rsvp;
 use App\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -46,8 +48,9 @@ class GuestController extends Controller
         $fotoWanita = Setting::get('foto_mempelai_wanita');
         $fotoPria = Setting::get('foto_mempelai_pria');
         $weddingDate = Setting::get('wedding_date', '2026-10-23T08:00');
+        $galleries = Gallery::orderBy('sort_order')->latest()->get();
 
-        return view('admin.guests.index', compact('guests', 'metrics', 'search', 'status', 'fotoWanita', 'fotoPria', 'weddingDate'));
+        return view('admin.guests.index', compact('guests', 'metrics', 'search', 'status', 'fotoWanita', 'fotoPria', 'weddingDate', 'galleries'));
     }
 
     public function updateCountdown(Request $request): RedirectResponse
@@ -113,5 +116,34 @@ class GuestController extends Controller
         $guest->delete();
 
         return redirect()->route('admin.guests.index')->with('success', 'Data tamu berhasil dihapus.');
+    }
+
+    public function storeGallery(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'title' => ['nullable', 'string', 'max:150'],
+        ]);
+
+        $path = $request->file('image')->store('galleries', 'public');
+
+        Gallery::create([
+            'image_path' => $path,
+            'title' => $validated['title'] ?? null,
+            'sort_order' => (int) Gallery::max('sort_order') + 1,
+        ]);
+
+        return redirect()->route('admin.guests.index')->with('success', 'Foto galeri berhasil ditambahkan.');
+    }
+
+    public function destroyGallery(Gallery $gallery): RedirectResponse
+    {
+        if ($gallery->image_path && Storage::disk('public')->exists($gallery->image_path)) {
+            Storage::disk('public')->delete($gallery->image_path);
+        }
+
+        $gallery->delete();
+
+        return redirect()->route('admin.guests.index')->with('success', 'Foto galeri berhasil dihapus.');
     }
 }

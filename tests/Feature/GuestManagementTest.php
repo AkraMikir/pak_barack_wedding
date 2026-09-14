@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Gallery;
 use App\Models\Guest;
 use App\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -93,6 +94,30 @@ class GuestManagementTest extends TestCase
         ]);
     }
 
+    public function test_guest_can_submit_rsvp_berhalangan(): void
+    {
+        $guest = Guest::create([
+            'name' => 'Budi Berhalangan',
+            'slug' => 'budi-berhalangan',
+        ]);
+
+        $response = $this->postJson('/rsvp', [
+            'guest_id' => $guest->id,
+            'guest_name' => $guest->name,
+            'status_hadir' => 'Tidak',
+            'jumlah_rombongan' => 3, // should be set to null for Tidak
+            'wishes' => 'Mohon maaf belum bisa hadir, doa terbaik untuk mempelai.',
+        ]);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('rsvps', [
+            'guest_id' => $guest->id,
+            'guest_name' => 'Budi Berhalangan',
+            'status_hadir' => 'Tidak',
+            'jumlah_rombongan' => null,
+        ]);
+    }
+
     public function test_guest_with_custom_turut_mengundang_shows_on_their_invitation(): void
     {
         $response = $this->post('/admin/guests', [
@@ -155,5 +180,35 @@ class GuestManagementTest extends TestCase
         $invitation->assertSee('2026-12-31T09:00');
         $invitation->assertSee('Desember 2026');
         $invitation->assertSee('calendar.google.com/calendar/render');
+    }
+
+    public function test_admin_can_upload_and_delete_gallery_photos(): void
+    {
+        Storage::fake('public');
+
+        $galleryFile = UploadedFile::fake()->image('prewed1.jpg', 800, 1000);
+
+        $response = $this->post('/admin/galleries', [
+            'image' => $galleryFile,
+            'title' => 'BUSANA ADAT KERATON TEST',
+        ]);
+
+        $response->assertRedirect('/admin/guests');
+
+        $gallery = Gallery::first();
+        $this->assertNotNull($gallery);
+        $this->assertSame('BUSANA ADAT KERATON TEST', $gallery->title);
+        Storage::disk('public')->assertExists($gallery->image_path);
+
+        $invitation = $this->get('/');
+        $invitation->assertStatus(200);
+        $invitation->assertSee('BUSANA ADAT KERATON TEST');
+        $invitation->assertSee(asset('storage/'.$gallery->image_path));
+
+        // Test delete
+        $deleteResponse = $this->delete('/admin/galleries/'.$gallery->id);
+        $deleteResponse->assertRedirect('/admin/guests');
+        $this->assertDatabaseMissing('galleries', ['id' => $gallery->id]);
+        Storage::disk('public')->assertMissing($gallery->image_path);
     }
 }

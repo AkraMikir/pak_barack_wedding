@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gallery;
 use App\Models\Guest;
 use App\Models\Rsvp;
 use App\Models\Setting;
@@ -26,8 +27,9 @@ class RsvpController extends Controller
         $fotoWanita = Setting::get('foto_mempelai_wanita');
         $fotoPria = Setting::get('foto_mempelai_pria');
         $weddingDate = Setting::get('wedding_date', '2026-10-23T08:00');
+        $galleries = Gallery::orderBy('sort_order')->latest()->get();
 
-        return view('welcome', compact('guest', 'turutMengundang', 'fotoWanita', 'fotoPria', 'weddingDate'));
+        return view('welcome', compact('guest', 'turutMengundang', 'fotoWanita', 'fotoPria', 'weddingDate', 'galleries'));
     }
 
     /**

@@ -239,6 +239,73 @@
         </form>
     </div>
 
+    {{-- Manajemen Galeri Foto Pre-Wedding --}}
+    <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-2xs">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-stone-800 mb-1 flex items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-amber-700">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            Galeri Pre-Wedding (Momen Bersama)
+        </h2>
+        <p class="text-xs text-stone-500 mb-4">Unggah foto momen bersama / pre-wedding beserta judul keterangan (misal: "BUSANA ADAT KERATON"). Foto akan tampil di slider galeri berbingkai elegan pada halaman undangan.</p>
+
+        {{-- Form Upload Galeri --}}
+        <form action="{{ route('admin.galleries.store') }}" method="POST" enctype="multipart/form-data" class="bg-stone-50 p-4 rounded-xl border border-stone-200 mb-6 flex flex-col md:flex-row items-end gap-4">
+            @csrf
+            <div class="w-full md:w-1/2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Pilih Foto (Maks 5MB)</label>
+                <input type="file" name="image" accept="image/*" required
+                       class="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-stone-200 file:text-stone-700 hover:file:bg-stone-300 cursor-pointer">
+            </div>
+            <div class="w-full md:w-1/2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Judul / Keterangan Foto</label>
+                <input type="text" name="title" placeholder="Contoh: BUSANA ADAT KERATON"
+                       class="w-full px-3 py-2 border border-stone-300 rounded-lg text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
+            </div>
+            <button type="submit"
+                    class="w-full md:w-auto px-5 py-2.5 bg-stone-800 hover:bg-stone-700 text-amber-100 font-semibold text-xs rounded-lg transition-all shadow-xs flex items-center justify-center gap-2 whitespace-nowrap">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Tambah Foto Galeri
+            </button>
+        </form>
+
+        {{-- Grid Foto Galeri Tersimpan --}}
+        <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600 mb-3">Foto Tersimpan ({{ $galleries->count() }})</h3>
+            @if($galleries->isEmpty())
+                <p class="text-xs text-stone-400 italic py-3">Belum ada foto galeri yang diunggah. Tampilan undangan akan menggunakan foto dokumentasi bawaan.</p>
+            @else
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                    @foreach($galleries as $item)
+                        <div class="relative group rounded-xl border border-stone-200 overflow-hidden bg-stone-100 flex flex-col">
+                            <div class="aspect-square w-full overflow-hidden bg-stone-200">
+                                <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->title }}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="p-2 flex-1 flex flex-col justify-between">
+                                <p class="text-[10px] font-bold text-stone-700 uppercase tracking-wide truncate" title="{{ $item->title }}">
+                                    {{ $item->title ?: 'Tanpa Judul' }}
+                                </p>
+                                <form action="{{ route('admin.galleries.destroy', $item) }}" method="POST" class="mt-2 text-right"
+                                      onsubmit="return confirm('Hapus foto ini dari galeri?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-[10px] text-red-600 hover:text-red-800 font-semibold">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    </div>
+
     {{-- Filter & Search Bar --}}
     <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <form method="GET" action="{{ route('admin.guests.index') }}" class="flex flex-wrap items-center gap-3 w-full md:w-auto">
@@ -295,7 +362,16 @@
                             if (str_starts_with($waNumber, '0')) {
                                 $waNumber = '62' . substr($waNumber, 1);
                             }
-                            $waMessage = rawurlencode("Halo {$guest->name},\n\nTanpa mengurangi rasa hormat, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami:\n\n*Astri & Ridho*\n\nBerikut link undangan personal Anda:\n{$invitationUrl}\n\nMerupakan suatu kehormatan bagi kami apabila Anda berkenan hadir dan memberikan doa restu.\n\nTerima kasih.");
+                            $messageText = "_Assalamualaikum Warahmatullahi Wabarakatuh_\n\n"
+                                . "Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i *{$guest->name}* untuk menghadiri acara kami.\n\n"
+                                . "*Berikut link undangan kami*, untuk info lengkap dari acara bisa kunjungi :\n\n"
+                                . "{$invitationUrl}\n\n"
+                                . "Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan untuk hadir dan memberikan doa restu.\n\n"
+                                . "*Mohon maaf perihal undangan hanya di bagikan melalui pesan ini.*\n\n"
+                                . "Dan agar selalu menjaga kesehatan bersama serta datang pada waktu yang telah ditentukan.*\n\n"
+                                . "Terima kasih banyak atas perhatiannya.\n\n"
+                                . "_Wassalamualaikum Warahmatullahi Wabarakatuh_";
+                            $waMessage = rawurlencode($messageText);
                             $waShareUrl = $waNumber ? "https://api.whatsapp.com/send?phone={$waNumber}&text={$waMessage}" : "https://api.whatsapp.com/send?text={$waMessage}";
                         @endphp
                         <tr class="hover:bg-stone-50/70 transition-colors">

@@ -142,11 +142,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-copy]').forEach(btn => {
         btn.addEventListener('click', () => {
             const text = btn.dataset.copy;
+            const copyType = btn.dataset.copyType || 'rekening';
+            const toastMsg = copyType === 'alamat' ? 'Alamat kirim tersalin!' : 'Nomor rekening tersalin!';
+
             navigator.clipboard.writeText(text).then(() => {
-                const original = btn.textContent;
-                btn.textContent = 'Tersalin! ✓';
-                showToast('Nomor rekening tersalin!');
-                setTimeout(() => { btn.textContent = original; }, 2000);
+                const span = btn.querySelector('span') || btn;
+                const original = span.textContent;
+                span.textContent = 'Tersalin! ✓';
+                showToast(toastMsg);
+                setTimeout(() => { span.textContent = original; }, 2000);
             }).catch(() => {
                 // Fallback for older browsers
                 const el = document.createElement('textarea');
@@ -155,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 el.select();
                 document.execCommand('copy');
                 document.body.removeChild(el);
-                showToast('Nomor rekening tersalin!');
+                showToast(toastMsg);
             });
         });
     });
@@ -164,14 +168,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const rsvpForm = document.getElementById('rsvp-form');
     const rsvpMsg  = document.getElementById('rsvp-message');
     const rombonganField = document.getElementById('field-rombongan');
+    const labelHadir = document.getElementById('label-hadir');
+    const labelTidak = document.getElementById('label-tidak');
     const statusInputs   = document.querySelectorAll('input[name="status_hadir"]');
 
-    // Toggle jumlah rombongan visibility
+    function syncRsvpSelection(val) {
+        if (val === 'Hadir') {
+            labelHadir?.classList.add('is-selected-hadir');
+            labelTidak?.classList.remove('is-selected-tidak');
+            if (rombonganField) rombonganField.style.display = 'block';
+        } else {
+            labelTidak?.classList.add('is-selected-tidak');
+            labelHadir?.classList.remove('is-selected-hadir');
+            if (rombonganField) rombonganField.style.display = 'none';
+        }
+    }
+
+    // Toggle jumlah rombongan visibility and button styling
     statusInputs.forEach(input => {
         input.addEventListener('change', () => {
-            if (rombonganField) {
-                rombonganField.style.display = input.value === 'Hadir' ? 'block' : 'none';
-            }
+            syncRsvpSelection(input.value);
         });
     });
 
@@ -180,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
 
             const submitBtn  = rsvpForm.querySelector('[type="submit"]');
-            const originalText = submitBtn.textContent;
+            const originalHtml = submitBtn.innerHTML;
             submitBtn.textContent = 'Mengirim...';
             submitBtn.disabled = true;
 
@@ -202,24 +218,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (res.ok) {
                     rsvpMsg.textContent = json.message;
-                    rsvpMsg.className = 'mt-4 p-3 rounded-lg text-center text-sm font-medium bg-green-50 text-green-800 border border-green-200';
+                    rsvpMsg.className = 'mt-5 p-3.5 rounded-xl text-center text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
                     rsvpMsg.style.display = 'block';
-                    rsvpForm.reset();
-                    if (rombonganField) rombonganField.style.display = 'block';
-                    // Reload guestbook
+
+                    // Reset textarea wishes & reload feed
+                    const wishesEl = rsvpForm.querySelector('textarea[name="wishes"]');
+                    if (wishesEl) wishesEl.value = '';
                     loadWishes();
                 } else {
                     const errors = json.errors ? Object.values(json.errors).flat().join(' ') : json.message;
                     rsvpMsg.textContent = errors;
-                    rsvpMsg.className = 'mt-4 p-3 rounded-lg text-center text-sm font-medium bg-red-50 text-red-800 border border-red-200';
+                    rsvpMsg.className = 'mt-5 p-3.5 rounded-xl text-center text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200';
                     rsvpMsg.style.display = 'block';
                 }
             } catch (err) {
                 rsvpMsg.textContent = 'Terjadi kesalahan. Coba lagi.';
-                rsvpMsg.className = 'mt-4 p-3 rounded-lg text-center text-sm font-medium bg-red-50 text-red-800 border border-red-200';
+                rsvpMsg.className = 'mt-5 p-3.5 rounded-xl text-center text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200';
                 rsvpMsg.style.display = 'block';
             } finally {
-                submitBtn.textContent = originalText;
+                submitBtn.innerHTML = originalHtml;
                 submitBtn.disabled = false;
                 if (locoScroll) setTimeout(() => locoScroll.update(), 300);
             }
@@ -238,28 +255,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (json.success && json.data.length > 0) {
                 wishesFeed.innerHTML = json.data.map(item => {
-                    const date = new Date(item.created_at);
-                    const dateStr = date.toLocaleDateString('id-ID', {
-                        day: 'numeric', month: 'long', year: 'numeric'
-                    });
-                    const badge = item.status_hadir === 'Hadir'
-                        ? `<span class="inline-block text-[9px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-medium tracking-wide">✓ Hadir</span>`
-                        : `<span class="inline-block text-[9px] px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 font-medium tracking-wide">Tidak Hadir</span>`;
+                    const badgeText = item.status_hadir === 'Hadir' ? 'HADIR' : 'BERHALANGAN';
+                    const badge = `<span class="badge-kehadiran">${badgeText}</span>`;
 
                     return `
-                        <div class="wish-card mb-3">
-                            <div class="flex items-start justify-between gap-2 mb-2">
-                                <p class="font-semibold text-sm text-brown-950" style="font-family:'Cinzel',serif;color:#362B24;">${escapeHtml(item.guest_name)}</p>
+                        <div class="wish-card">
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <p class="font-bold text-xs uppercase tracking-wide" style="font-family:'Cinzel',serif;color:#362B24;letter-spacing:0.06em;">${escapeHtml(item.guest_name)}</p>
                                 ${badge}
                             </div>
-                            <p class="text-sm leading-relaxed" style="font-family:'Playfair Display',serif;font-style:italic;color:#6B4D38;">"${escapeHtml(item.wishes)}"</p>
-                            <p class="text-[10px] mt-2" style="color:rgba(107,77,56,0.5);">${dateStr}</p>
+                            <p class="text-xs sm:text-sm leading-relaxed" style="font-family:'Playfair Display',serif;font-style:italic;color:#5C4B3E;line-height:1.65;">${escapeHtml(item.wishes)}</p>
                         </div>
                     `;
                 }).join('');
                 if (locoScroll) setTimeout(() => locoScroll.update(), 100);
             } else {
-                wishesFeed.innerHTML = `<p class="text-center text-sm py-6" style="color:rgba(107,77,56,0.5);font-style:italic;">Belum ada ucapan. Jadilah yang pertama!</p>`;
+                wishesFeed.innerHTML = `<p class="text-center text-sm py-6" style="color:rgba(107,77,56,0.5);font-style:italic;">Belum ada doa &amp; ucapan.</p>`;
             }
         } catch (err) {
             wishesFeed.innerHTML = `<p class="text-center text-sm py-4" style="color:rgba(107,77,56,0.5);">Gagal memuat ucapan.</p>`;
@@ -275,6 +286,106 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     loadWishes();
+
+    // ── Galeri Slider (Dokumentasi Cinta) ────────────────
+    const galleryCard = document.getElementById('gallery-card');
+    if (galleryCard) {
+        let galleryData = [];
+        try {
+            galleryData = JSON.parse(galleryCard.dataset.galleryItems || '[]');
+        } catch (e) {
+            galleryData = [];
+        }
+
+        if (galleryData.length > 0) {
+            let currentIndex = 0;
+            const mainImg = document.getElementById('gallery-main-img');
+            const mainTitle = document.getElementById('gallery-main-title');
+            const prevBtn = document.getElementById('gallery-prev');
+            const nextBtn = document.getElementById('gallery-next');
+            const dots = document.querySelectorAll('.gallery-dot');
+            const thumbs = document.querySelectorAll('.gallery-thumb-btn');
+
+            function goToSlide(index) {
+                if (index < 0) index = galleryData.length - 1;
+                if (index >= galleryData.length) index = 0;
+                currentIndex = index;
+
+                const item = galleryData[currentIndex];
+
+                if (mainImg) {
+                    mainImg.style.opacity = '0';
+                    setTimeout(() => {
+                        mainImg.src = item.url;
+                        mainImg.alt = item.title;
+                        mainImg.style.opacity = '1';
+                    }, 150);
+                }
+
+                if (mainTitle) {
+                    mainTitle.textContent = item.title;
+                }
+
+                dots.forEach((dot, idx) => {
+                    if (idx === currentIndex) {
+                        dot.className = 'gallery-dot transition-all duration-300 w-6 h-2 rounded-full bg-[#8B6C3F]';
+                    } else {
+                        dot.className = 'gallery-dot transition-all duration-300 w-2 h-2 rounded-full bg-[#D8C7B0] hover:bg-[#BCA990]';
+                    }
+                });
+
+                thumbs.forEach((thumb, idx) => {
+                    if (idx === currentIndex) {
+                        thumb.className = 'gallery-thumb-btn relative flex-shrink-0 w-12 h-14 sm:w-14 sm:h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 border-[#8B6C3F] scale-105 shadow-sm';
+                        thumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    } else {
+                        thumb.className = 'gallery-thumb-btn relative flex-shrink-0 w-12 h-14 sm:w-14 sm:h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 border-transparent opacity-60 hover:opacity-100';
+                    }
+                });
+            }
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+            }
+
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const idx = parseInt(dot.dataset.galleryIndex, 10);
+                    if (!isNaN(idx)) goToSlide(idx);
+                });
+            });
+
+            thumbs.forEach(thumb => {
+                thumb.addEventListener('click', () => {
+                    const idx = parseInt(thumb.dataset.galleryThumb, 10);
+                    if (!isNaN(idx)) goToSlide(idx);
+                });
+            });
+
+            // Touch swipe gesture on main image
+            let touchStartX = 0;
+            let touchEndX = 0;
+            galleryCard.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            galleryCard.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchEndX - touchStartX;
+                if (Math.abs(diff) > 40) {
+                    if (diff < 0) {
+                        goToSlide(currentIndex + 1);
+                    } else {
+                        goToSlide(currentIndex - 1);
+                    }
+                }
+            }, { passive: true });
+        }
+    }
 
     // ── Bottom Nav Scroll To Section ─────────────────────
     document.querySelectorAll('[data-scroll-to-target]').forEach(link => {
