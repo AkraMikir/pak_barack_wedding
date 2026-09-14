@@ -36,7 +36,23 @@ class GuestManagementTest extends TestCase
             'name' => 'Budi Santoso',
             'slug' => 'budi-santoso',
             'category' => 'VIP',
+            'phone_number' => '081234567890',
             'custom_turut_mengundang' => 'Keluarga Besar *******',
+        ]);
+    }
+
+    public function test_admin_cannot_create_guest_without_phone_number(): void
+    {
+        $response = $this->post('/admin/guests', [
+            'name' => 'Budi Tanpa WA',
+            'category' => 'Teman',
+            'phone_number' => '',
+            'custom_turut_mengundang' => 'Teman Kuliah',
+        ]);
+
+        $response->assertSessionHasErrors('phone_number');
+        $this->assertDatabaseMissing('guests', [
+            'name' => 'Budi Tanpa WA',
         ]);
     }
 
@@ -123,6 +139,7 @@ class GuestManagementTest extends TestCase
         $response = $this->post('/admin/guests', [
             'name' => 'Tamu Khusus',
             'category' => 'Rekan Kerja',
+            'phone_number' => '081987654321',
             'custom_turut_mengundang' => 'Bro ******* Team *******',
         ]);
 

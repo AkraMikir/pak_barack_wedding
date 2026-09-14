@@ -89,7 +89,7 @@ class GuestController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:50'],
-            'phone_number' => ['nullable', 'string', 'max:20'],
+            'phone_number' => ['required', 'string', 'max:20'],
             'custom_turut_mengundang' => ['required', 'string', 'max:500'],
         ]);
 

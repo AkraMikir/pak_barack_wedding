@@ -117,9 +117,12 @@
             </div>
 
             <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1.5">WhatsApp (Opsional)</label>
-                <input type="text" name="phone_number" placeholder="Contoh: 081234567890"
-                       class="w-full px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-lg text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700">
+                <label class="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1.5">WhatsApp *</label>
+                <input type="text" name="phone_number" required value="{{ old('phone_number') }}" placeholder="Contoh: 081234567890"
+                       class="w-full px-3.5 py-2.5 bg-stone-50 border @error('phone_number') border-rose-500 @else border-stone-300 @enderror rounded-lg text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-700/20 focus:border-amber-700">
+                @error('phone_number')
+                    <p class="text-[11px] text-rose-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="md:col-span-3">
