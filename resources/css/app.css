@@ -28,6 +28,20 @@
     --color-dark-950: #362B24;
 }
 
+/* ── Sembunyikan Browser Scrollbar (Cegah Pergeseran Layout) ── */
+html, body {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
 /* ── Smooth Scroll & Locomotive Reset ───────────────── */
 html.has-scroll-smooth {
     overflow: hidden;
@@ -45,18 +59,33 @@ html.has-scroll-dragging {
     min-height: 100vh;
 }
 
-/* ── Locomotive Scroll Reveal Animations ─────────────── */
-[data-scroll] {
-    transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+/* ── Locomotive Scroll Reveal & Ambient Motion Animations ── */
+[data-scroll]:not([data-scroll-speed]) {
+    transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-scroll][data-scroll-speed] {
+    transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
 }
 
 .reveal-up {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(36px);
 }
 
 .reveal-up.is-inview {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-down {
+    opacity: 0;
+    transform: translateY(-30px);
+}
+
+.reveal-down.is-inview {
     opacity: 1;
     transform: translateY(0);
 }
@@ -71,7 +100,7 @@ html.has-scroll-dragging {
 
 .reveal-left {
     opacity: 0;
-    transform: translateX(-30px);
+    transform: translateX(-32px);
 }
 
 .reveal-left.is-inview {
@@ -81,7 +110,7 @@ html.has-scroll-dragging {
 
 .reveal-right {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translateX(32px);
 }
 
 .reveal-right.is-inview {
@@ -100,9 +129,79 @@ html.has-scroll-dragging {
     transform: scaleX(1);
 }
 
+.reveal-scale-in {
+    opacity: 0;
+    transform: scale(0.85);
+    transform-origin: center;
+}
+
+.reveal-scale-in.is-inview {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ── Living Ambient Motion (Efek Melayang / Bunga & Daun Tertawa) ── */
+@keyframes ambientFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes ambientFloatRot {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-4px) rotate(2.5deg);
+    }
+}
+
+@keyframes ambientSwayLeaf {
+    0%, 100% {
+        transform: rotate(0deg) translate(0, 0);
+    }
+    35% {
+        transform: rotate(2.5deg) translate(2px, -2px);
+    }
+    70% {
+        transform: rotate(-2deg) translate(-2px, 1.5px);
+    }
+}
+
+@keyframes ambientPulseGold {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(161, 120, 57, 0.25);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(161, 120, 57, 0);
+    }
+}
+
+.anim-float-gentle {
+    animation: ambientFloat 4.5s ease-in-out infinite;
+}
+
+.anim-float-rot {
+    animation: ambientFloatRot 5.5s ease-in-out infinite;
+}
+
+.anim-sway-leaf {
+    animation: ambientSwayLeaf 6.5s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+
+.anim-pulse-gold {
+    animation: ambientPulseGold 3s ease-in-out infinite;
+}
+
 /* Stagger delays */
 .delay-100 { transition-delay: 0.1s; }
+.delay-150 { transition-delay: 0.15s; }
 .delay-200 { transition-delay: 0.2s; }
+.delay-250 { transition-delay: 0.25s; }
 .delay-300 { transition-delay: 0.3s; }
 .delay-400 { transition-delay: 0.4s; }
 .delay-500 { transition-delay: 0.5s; }
@@ -127,7 +226,7 @@ html.has-scroll-dragging {
     user-select: none;
 }
 
-/* ── Cover / Hero Section ─────────────────────────────── */
+/* ── Cover / Hero Section (Sheet Lift Up Effect) ───────── */
 #cover-overlay {
     position: fixed;
     inset: 0;
@@ -137,13 +236,26 @@ html.has-scroll-dragging {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.8s ease, visibility 0.8s ease;
+    transform: translateY(0);
+    transition: transform 1.1s cubic-bezier(0.76, 0, 0.24, 1),
+                box-shadow 1.1s cubic-bezier(0.76, 0, 0.24, 1);
+    box-shadow: 0 15px 45px rgba(47, 36, 29, 0.2);
+    will-change: transform;
 }
 
 #cover-overlay.hidden-overlay {
-    opacity: 0;
-    visibility: hidden;
+    transform: translateY(-102%);
+    box-shadow: 0 35px 70px rgba(47, 36, 29, 0.45);
     pointer-events: none;
+}
+
+/* Efek kedalaman kertas bertumpuk untuk main content */
+#main-content {
+    transition: filter 0.85s ease;
+}
+
+body.overflow-hidden #main-content {
+    filter: brightness(0.97);
 }
 
 /* ── Countdown Boxes ──────────────────────────────────── */

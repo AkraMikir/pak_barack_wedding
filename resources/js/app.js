@@ -11,27 +11,27 @@ window.scrollTo(0, 0);
 document.addEventListener('DOMContentLoaded', () => {
     window.scrollTo(0, 0);
 
-    // ── Locomotive Scroll Init ────────────────────────────
+    // ── Locomotive Scroll Init (v5 Modern Lenis setup) ────
     const scrollContainer = document.querySelector('[data-scroll-container]');
 
     let locoScroll = null;
 
     if (scrollContainer) {
         locoScroll = new LocomotiveScroll({
-            el: scrollContainer,
-            smooth: true,
-            lerp: 0.08,
-            multiplier: 1,
-            class: 'is-inview',
-            tablet: { smooth: true, breakpoint: 1024 },
-            smartphone: { smooth: false },
+            lenisOptions: {
+                lerp: 0.09,
+                smoothWheel: true,
+                syncTouch: false, // native touch on smartphone to avoid touch lag
+            },
+            triggerRootMargin: '-8% 0px -8% 0px',
+            rafRootMargin: '100% 100% 100% 100%',
             autoStart: false,
         });
 
-        locoScroll.scrollTo(0, { immediate: true });
-
-        // Update on resize
-        window.addEventListener('resize', () => locoScroll.update());
+        // Update on resize using v5 method
+        window.addEventListener('resize', () => {
+            if (locoScroll) locoScroll.resize();
+        });
     }
 
     // ── Cover Overlay "Buka Undangan" ─────────────────────
@@ -65,22 +65,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 coverOverlay.classList.add('hidden-overlay');
                 document.body.classList.remove('overflow-hidden');
 
-
-
                 if (locoScroll) {
                     locoScroll.start();
-                    locoScroll.scrollTo(0, { immediate: true });
-                    locoScroll.scrollTo('#section-ayat', { immediate: true });
-                    locoScroll.update();
+                    locoScroll.resize();
                 }
 
                 setTimeout(() => {
                     coverOverlay.style.display = 'none';
                     if (locoScroll) {
-                        locoScroll.scrollTo('#section-ayat', { immediate: true });
-                        locoScroll.update();
+                        locoScroll.resize();
                     }
-                }, 800);
+                }, 1100);
             }
         });
     });
@@ -228,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } finally {
                 submitBtn.innerHTML = originalHtml;
                 submitBtn.disabled = false;
-                if (locoScroll) setTimeout(() => locoScroll.update(), 300);
+                if (locoScroll) setTimeout(() => locoScroll.resize(), 300);
             }
         });
     }
@@ -258,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     `;
                 }).join('');
-                if (locoScroll) setTimeout(() => locoScroll.update(), 100);
+                if (locoScroll) setTimeout(() => locoScroll.resize(), 100);
             } else {
                 wishesFeed.innerHTML = `<p class="text-center text-sm py-8 italic" style="font-family:'Playfair Display',serif;color:rgba(107,77,56,0.6);">Belum ada doa &amp; ucapan.</p>`;
             }
@@ -428,8 +423,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.addEventListener('scroll', handleDelmanScroll, { passive: true });
         window.addEventListener('resize', handleDelmanScroll, { passive: true });
-        if (locoScroll && typeof locoScroll.on === 'function') {
-            locoScroll.on('scroll', handleDelmanScroll);
+        if (locoScroll?.lenisInstance) {
+            locoScroll.lenisInstance.on('scroll', handleDelmanScroll);
         }
         handleDelmanScroll();
     }
