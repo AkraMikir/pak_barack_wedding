@@ -34,8 +34,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ── Cover Overlay "Buka Undangan" ─────────────────────
+    // ── Loading Screen Delay (2 Detik) ───────────────────
+    const loadingScreen = document.getElementById('loading-screen');
     const coverOverlay  = document.getElementById('cover-overlay');
+
+    if (loadingScreen) {
+        setTimeout(() => {
+            loadingScreen.style.opacity = '0';
+            loadingScreen.style.pointerEvents = 'none';
+
+            if (coverOverlay) {
+                coverOverlay.classList.add('is-loaded');
+            }
+
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 700);
+        }, 2000);
+    } else if (coverOverlay) {
+        coverOverlay.classList.add('is-loaded');
+    }
+
+    // ── Cover Overlay "Buka Undangan" ─────────────────────
     const bukaBtns      = document.querySelectorAll('[data-buka-undangan]');
     const mainContent   = document.getElementById('main-content');
 

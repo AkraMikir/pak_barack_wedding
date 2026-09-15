@@ -113,6 +113,52 @@
 <body class="overflow-x-hidden overflow-hidden" style="background-color:#FFFCF7;" @if(isset($guest) && $guest) data-guest-id="{{ $guest->id }}" @endif>
 
 {{-- ════════════════════════════════════════════════════
+     LOADING SCREEN OVERLAY (Delay 2 Detik)
+     ════════════════════════════════════════════════════ --}}
+<div id="loading-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-opacity duration-700 pointer-events-auto"
+     style="background-color: #FFFCF7; background-image: url('{{ asset('assets-website/batik_background.svg') }}'); background-repeat: repeat; background-size: 320px auto;">
+    
+    {{-- Glow Halo Background --}}
+    <div class="absolute pointer-events-none"
+         style="width: 320px; height: 320px; border-radius: 9999px; background: radial-gradient(circle, rgba(218, 191, 143, 0.45) 0%, rgba(255,252,247,0) 70%); filter: blur(24px);"></div>
+
+    <div class="relative z-10 flex flex-col items-center text-center px-6">
+        {{-- Elegant Spinning Ring / Floral Pulse --}}
+        <div class="relative w-20 h-20 mb-6 flex items-center justify-center">
+            {{-- Outer Spinning Border --}}
+            <div class="absolute inset-0 rounded-full border-2 border-t-[#84683A] border-r-transparent border-b-[#DABF8F] border-l-transparent animate-spin" style="animation-duration: 2s;"></div>
+            {{-- Inner Pulsing Ring --}}
+            <div class="w-14 h-14 rounded-full border border-[#84683A]/30 flex items-center justify-center bg-[#FFFCF7]/90 shadow-xs">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#84683A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </div>
+        </div>
+
+        {{-- Subtitle Header --}}
+        <p class="uppercase tracking-[0.25em] text-[10px] text-[#84683A] font-bold mb-1" style="font-family:'Cinzel',serif;">
+            WEDDING INVITATION
+        </p>
+
+        {{-- Nama Mempelai --}}
+        <h1 class="text-4xl sm:text-5xl text-[#362B24] mb-3" style="font-family:'Great Vibes',cursive; text-shadow: 0 1px 2px rgba(255,255,255,0.8);">
+            Astri &amp; Ridho
+        </h1>
+
+        {{-- Animated Loading Text & Dots --}}
+        <div class="flex items-center gap-1.5 text-xs text-[#6B4D38] font-medium" style="font-family:'Playfair Display',serif; font-style: italic;">
+            <span>Memuat Undangan</span>
+            <span class="inline-flex gap-0.5">
+                <span class="animate-bounce" style="animation-delay: 0s;">.</span>
+                <span class="animate-bounce" style="animation-delay: 0.15s;">.</span>
+                <span class="animate-bounce" style="animation-delay: 0.3s;">.</span>
+            </span>
+        </div>
+    </div>
+</div>
+
+
+{{-- ════════════════════════════════════════════════════
      DESKTOP LEFT PANEL (Sampul / Cover Panel Kiri)
      Aktif hanya pada tampilan desktop (≥ 768px)
      ════════════════════════════════════════════════════ --}}
@@ -292,6 +338,25 @@
             70% {
                 transform: rotate(2deg) translate(1px, 1px);
             }
+        }
+
+        /* Delay animation entrance until cover-overlay is-loaded is added by JS after loading screen */
+        #cover-overlay .anim-pengantin-landing,
+        #cover-overlay .anim-creep-tl,
+        #cover-overlay .anim-creep-bl,
+        #cover-overlay .anim-creep-tr,
+        #cover-overlay .anim-creep-br,
+        #cover-overlay .anim-fade-card {
+            animation-play-state: paused;
+        }
+
+        #cover-overlay.is-loaded .anim-pengantin-landing,
+        #cover-overlay.is-loaded .anim-creep-tl,
+        #cover-overlay.is-loaded .anim-creep-bl,
+        #cover-overlay.is-loaded .anim-creep-tr,
+        #cover-overlay.is-loaded .anim-creep-br,
+        #cover-overlay.is-loaded .anim-fade-card {
+            animation-play-state: running;
         }
 
         .anim-pengantin-landing {
@@ -803,7 +868,7 @@
             {{-- Peta diapit Ornamen Candi Bentar / Gapura Kiri & Kanan --}}
             <div class="relative w-full flex items-end justify-center -mx-4 sm:mx-0">
                 {{-- Gapura Kiri --}}
-                <div data-scroll data-scroll-speed="0.2" class="relative shrink-0 select-none pointer-events-none z-10 -mr-[8px]"
+                <div class="relative shrink-0 select-none pointer-events-none z-10 -mr-[8px]"
                      style="height: 168px;">
                     <img src="{{ asset('assets-website/maps/gapura-kiri-gmaps.svg') }}"
                          class="h-full w-auto object-contain object-bottom drop-shadow-2xs"
@@ -824,7 +889,7 @@
                 </div>
 
                 {{-- Gapura Kanan --}}
-                <div data-scroll data-scroll-speed="0.2" class="relative shrink-0 select-none pointer-events-none z-10 -ml-[8px]"
+                <div class="relative shrink-0 select-none pointer-events-none z-10 -ml-[8px]"
                      style="height: 168px;">
                     <img src="{{ asset('assets-website/maps/gapura-kanan-gmaps.svg') }}"
                          class="h-full w-auto object-contain object-bottom drop-shadow-2xs"
