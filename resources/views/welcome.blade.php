@@ -959,10 +959,24 @@
     {{-- ────────────────────────────────────────────────
          SECTION 6: FORM RSVP (KEHADIRAN TAMU)
          ──────────────────────────────────────────────── --}}
-    <section id="section-rsvp" data-scroll-section class="px-6 py-12"
+    <section id="section-rsvp" data-scroll-section class="relative px-6 pt-10 pb-20 overflow-hidden"
              style="background-color:#FFFCF7;border-top:1px solid rgba(223,211,189,0.5);">
 
-        <div class="text-center max-w-sm mx-auto mb-8">
+        {{-- Ornamen Sudut Kiri Atas RSVP --}}
+        <div data-scroll class="reveal-left delay-100 absolute top-0 left-0 pointer-events-none select-none z-10"
+             style="width: 115px;">
+            <img src="{{ asset('assets-website/rsvp/corner-kiri-rsvp.svg') }}"
+                 class="w-full h-auto object-contain" alt="ornamen sudut kiri rsvp">
+        </div>
+
+        {{-- Ornamen Sudut Kanan Atas RSVP --}}
+        <div data-scroll class="reveal-right delay-100 absolute top-0 right-0 pointer-events-none select-none z-10"
+             style="width: 115px;">
+            <img src="{{ asset('assets-website/rsvp/corner-kanan-rsvp.svg') }}"
+                 class="w-full h-auto object-contain" alt="ornamen sudut kanan rsvp">
+        </div>
+
+        <div class="relative z-10 text-center max-w-sm mx-auto mb-8">
             <p data-scroll class="reveal-up uppercase tracking-widest mb-1.5"
                style="font-family:'Cinzel',serif;font-size:11px;color:#8B6C3F;letter-spacing:0.25em;">
                 KEHADIRAN TAMU
@@ -977,7 +991,7 @@
             </p>
         </div>
 
-        <form id="rsvp-form" data-scroll class="reveal-up delay-200 flex flex-col gap-5 max-w-sm mx-auto" novalidate>
+        <form id="rsvp-form" data-scroll class="reveal-up delay-200 relative z-10 flex flex-col gap-5 max-w-sm mx-auto" novalidate>
             @csrf
             @if(isset($guest) && $guest)
                 <input type="hidden" name="guest_id" value="{{ $guest->id }}">
@@ -1074,16 +1088,52 @@
             </button>
         </form>
 
-        <div id="rsvp-message" class="mt-5 max-w-sm mx-auto" style="display:none;"></div>
+        <div id="rsvp-message" class="relative z-10 mt-5 max-w-sm mx-auto" style="display:none;"></div>
+
+        {{-- Pembatas Garis Bawah Halus --}}
+        <div class="absolute bottom-0 left-0 right-0 h-[1px] pointer-events-none" style="background-color: rgba(223,211,189,0.5);"></div>
+
+        {{-- Ornamen Delman Bawah RSVP --}}
+        <div id="delman-rsvp-wrapper"
+             data-scroll
+             class="reveal-fade delay-200 absolute bottom-0 left-0 right-0 pointer-events-none select-none z-10"
+             style="line-height: 0;">
+            <div id="delman-rsvp-container"
+                 style="width: 125px; will-change: transform; transition: transform 0.05s linear;">
+                <img id="delman-rsvp"
+                     src="{{ asset('assets-website/rsvp/batas-delman-bawah.svg') }}"
+                     class="w-full h-auto object-contain block"
+                     alt="ornamen delman rsvp">
+            </div>
+        </div>
     </section>
 
     {{-- ────────────────────────────────────────────────
          SECTION 7: BUKU TAMU (UNTAIAN DOA RESTU)
          ──────────────────────────────────────────────── --}}
-    <section id="section-bukutamu" data-scroll-section class="px-6 py-12"
-             style="background-color:#FFFCF7;border-top:1px solid rgba(223,211,189,0.5);">
+    <section id="section-bukutamu" data-scroll-section class="relative px-6 py-12 overflow-hidden"
+             style="background-color:#FAF6EE;border-top:1px solid rgba(223,211,189,0.5);">
 
-        <div class="text-center max-w-sm mx-auto mb-8">
+        {{-- Ornamen Pohon Kanan Atas --}}
+        <div data-scroll class="reveal-right delay-200 absolute top-0 right-0 pointer-events-none select-none z-0"
+             style="width: 145px;">
+            <img src="{{ asset('assets-website/buku-tamu/pohon-kanan.svg') }}"
+                 class="w-full h-auto object-contain select-none"
+                 alt="Ornamen Pohon Kanan">
+        </div>
+
+        {{-- Ornamen Daun Kiri Bawah --}}
+        <div data-scroll class="reveal-left delay-200 absolute bottom-0 left-0 pointer-events-none select-none z-0"
+             style="width: 52px; height: 220px;">
+            <img src="{{ asset('assets-website/buku-tamu/daun-kiri-bawah atas.svg') }}"
+                 class="absolute bottom-0 left-0 w-[51px] h-auto object-contain select-none"
+                 alt="Ornamen Daun Kiri Bawah Atas">
+            <img src="{{ asset('assets-website/buku-tamu/dain-kiri-bawah-bawah.svg') }}"
+                 class="absolute bottom-0 left-0 w-[47px] h-auto object-contain select-none"
+                 alt="Ornamen Daun Kiri Bawah Bawah">
+        </div>
+
+        <div class="relative z-10 text-center max-w-sm mx-auto mb-8">
             <p data-scroll class="reveal-up uppercase tracking-widest mb-1.5"
                style="font-family:'Cinzel',serif;font-size:11px;color:#8B6C3F;letter-spacing:0.25em;">
                 UNTAIAN DOA RESTU
@@ -1094,8 +1144,8 @@
             </h2>
         </div>
 
-        <div data-scroll class="reveal-up delay-200 wishes-feed max-w-sm mx-auto flex flex-col gap-3.5" id="wishes-feed">
-            <p class="text-center text-sm py-6 italic" style="color:rgba(107,77,56,0.5);">
+        <div data-scroll class="reveal-up delay-200 wishes-feed max-w-sm mx-auto flex flex-col gap-3 relative z-10" id="wishes-feed">
+            <p class="text-center text-sm py-6 italic" style="font-family:'Playfair Display',serif;color:rgba(107,77,56,0.6);">
                 Memuat ucapan...
             </p>
         </div>
@@ -1104,10 +1154,36 @@
     {{-- ────────────────────────────────────────────────
          SECTION 8: AMPLOP DIGITAL (TANDA KASIH)
          ──────────────────────────────────────────────── --}}
-    <section id="section-amplop" data-scroll-section class="px-6 py-12"
+    <section id="section-amplop" data-scroll-section class="relative overflow-hidden px-6 py-12"
              style="background:#FAF6EE;border-top:1px solid rgba(223,211,189,0.5);">
 
-        <div class="text-center max-w-sm mx-auto mb-8">
+        {{-- ── Ornamen Sisi Amplop Digital ── --}}
+        {{-- Bunga Atas Kiri --}}
+        <img src="{{ asset('assets-website/amplop-digital/bunga-atas-kiri.svg') }}"
+             alt=""
+             class="absolute top-0 left-0 w-[85px] sm:w-[100px] pointer-events-none select-none z-20">
+
+        {{-- Daun Atas Kanan --}}
+        <img src="{{ asset('assets-website/amplop-digital/daun-atas-kanan.svg') }}"
+             alt=""
+             class="absolute top-0 right-0 w-[85px] sm:w-[100px] pointer-events-none select-none z-20">
+
+        {{-- Bunga Kiri Bawah (Atas) --}}
+        <img src="{{ asset('assets-website/amplop-digital/bunga-kiri-bawah-atas.svg') }}"
+             alt=""
+             class="absolute bottom-[115px] left-0 w-[78px] sm:w-[90px] pointer-events-none select-none z-20">
+
+        {{-- Bunga Kiri Bawah (Bawah) --}}
+        <img src="{{ asset('assets-website/amplop-digital/bunga-kiri-bawah-bawah.svg') }}"
+             alt=""
+             class="absolute bottom-0 left-0 w-[70px] sm:w-[82px] pointer-events-none select-none z-20">
+
+        {{-- Daun Bawah Kanan --}}
+        <img src="{{ asset('assets-website/amplop-digital/daun-bawah-kanan.svg') }}"
+             alt=""
+             class="absolute bottom-0 right-0 w-[65px] sm:w-[76px] pointer-events-none select-none z-20">
+
+        <div class="relative z-10 text-center max-w-sm mx-auto mb-8">
             <p data-scroll class="reveal-up uppercase tracking-widest mb-1.5"
                style="font-family:'Cinzel',serif;font-size:11px;color:#8B6C3F;letter-spacing:0.25em;">
                 TANDA KASIH
@@ -1122,9 +1198,14 @@
             </p>
         </div>
 
-        <div class="max-w-sm mx-auto flex flex-col gap-4">
+        <div class="relative z-10 max-w-sm mx-auto flex flex-col gap-4">
             {{-- Rekening 1: Ridho --}}
-            <div data-scroll class="reveal-up delay-200 bg-[#F9F5EE] border border-[#D5C2A5] rounded-2xl p-5 shadow-xs">
+            <div data-scroll class="relative reveal-up delay-200 bg-[#F9F5EE] border border-[#D5C2A5] rounded-2xl p-5 shadow-xs">
+                {{-- Corner Atas Kiri --}}
+                <img src="{{ asset('assets-website/amplop-digital/corner-atas-kiri.svg') }}"
+                     alt=""
+                     class="absolute -top-2.5 -left-2.5 w-[65px] sm:w-[74px] pointer-events-none z-20 select-none">
+
                 <div class="flex items-center justify-between mb-3.5">
                     <p class="font-bold text-xs uppercase tracking-wider text-[#7A5B28]"
                        style="font-family:'Cinzel',serif;letter-spacing:0.1em;">
@@ -1164,7 +1245,12 @@
             </div>
 
             {{-- Rekening 2: Sulastri --}}
-            <div data-scroll class="reveal-up delay-300 bg-[#F9F5EE] border border-[#D5C2A5] rounded-2xl p-5 shadow-xs">
+            <div data-scroll class="relative reveal-up delay-300 bg-[#F9F5EE] border border-[#D5C2A5] rounded-2xl p-5 shadow-xs">
+                {{-- Corner Bawah Kanan --}}
+                <img src="{{ asset('assets-website/amplop-digital/corner-bawah-kanan.svg') }}"
+                     alt=""
+                     class="absolute -bottom-2.5 -right-2.5 w-[65px] sm:w-[74px] pointer-events-none z-20 select-none">
+
                 <div class="flex items-center justify-between mb-3.5">
                     <p class="font-bold text-xs uppercase tracking-wider text-[#7A5B28]"
                        style="font-family:'Cinzel',serif;letter-spacing:0.1em;">
@@ -1324,8 +1410,6 @@
 
 </div><!-- /data-scroll-container -->
 
-{{-- Toast copy --}}
-<div id="copy-toast">Nomor rekening tersalin!</div>
 
 </body>
 </html>
