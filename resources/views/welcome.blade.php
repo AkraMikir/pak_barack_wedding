@@ -770,26 +770,68 @@
         </div>
 
         {{-- Maps --}}
-        <div data-scroll class="reveal-up delay-400 w-full mt-6">
-            <div class="rounded-lg overflow-hidden mb-3" style="border:1px solid rgba(220,200,166,0.8);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.3!2d109.013!3d-7.633!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7aa40000000001%3A0x1!2sDs.+Mergawati%2C+Kec.+Kroya%2C+Kab.+Cilacap!5e0!3m2!1sid!2sid!4v1"
-                    width="100%"
-                    height="160"
-                    style="border:0;display:block;"
-                    allowfullscreen=""
-                    loading="lazy">
-                </iframe>
+        <div data-scroll class="reveal-up delay-400 w-full mt-6 flex flex-col items-center">
+            {{-- Peta diapit Ornamen Candi Bentar / Gapura Kiri & Kanan --}}
+            <div class="relative w-full flex items-end justify-center -mx-4 sm:mx-0">
+                {{-- Gapura Kiri --}}
+                <div class="relative shrink-0 select-none pointer-events-none z-10 -mr-[8px]"
+                     style="height: 168px;">
+                    <img src="{{ asset('assets-website/maps/gapura-kiri-gmaps.svg') }}"
+                         class="h-full w-auto object-contain object-bottom drop-shadow-2xs"
+                         alt="Gapura Kiri">
+                </div>
+
+                {{-- Frame Google Maps --}}
+                <div class="relative z-0 flex-1 max-w-[276px] overflow-hidden"
+                     style="height: 168px; border: 1px solid #DFD3BD; background: #e8ece9;">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.3!2d109.013!3d-7.633!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7aa40000000001%3A0x1!2sDs.+Mergawati%2C+Kec.+Kroya%2C+Kab.+Cilacap!5e0!3m2!1sid!2sid!4v1"
+                        width="100%"
+                        height="100%"
+                        style="border:0;display:block;"
+                        allowfullscreen=""
+                        loading="lazy">
+                    </iframe>
+                </div>
+
+                {{-- Gapura Kanan --}}
+                <div class="relative shrink-0 select-none pointer-events-none z-10 -ml-[8px]"
+                     style="height: 168px;">
+                    <img src="{{ asset('assets-website/maps/gapura-kanan-gmaps.svg') }}"
+                         class="h-full w-auto object-contain object-bottom drop-shadow-2xs"
+                         alt="Gapura Kanan">
+                </div>
             </div>
-            <a href="https://maps.google.com/?q=Ds.+Mergawati+Kec.+Kroya+Kab.+Cilacap"
-               target="_blank"
-               class="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-full uppercase tracking-wide hover:opacity-80 transition-opacity"
-               style="border:1px solid #84683A;font-family:'Cinzel',serif;font-size:12px;color:#362B24;letter-spacing:0.05em;">
-                <svg width="10" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-                </svg>
-                BUKA PETUNJUK DI GOOGLE MAPS
-            </a>
+
+            {{-- Tombol Buka Petunjuk di Google Maps Diapit Bunga Kiri & Kanan --}}
+            <div class="relative w-full flex items-center justify-center mt-5 px-2">
+                {{-- Bunga Kiri --}}
+                <div class="shrink-0 select-none pointer-events-none mr-1 sm:mr-2" style="width: 44px; height: 38px;">
+                    <img src="{{ asset('assets-website/maps/bunga-kiri-gmaps.svg') }}"
+                         class="w-full h-full object-contain"
+                         alt="Bunga Kiri">
+                </div>
+
+                {{-- Link Tombol --}}
+                <a href="https://maps.google.com/?q=Ds.+Mergawati+Kec.+Kroya+Kab.+Cilacap"
+                   target="_blank"
+                   class="inline-flex items-center justify-center gap-1.5 py-1 px-1 uppercase tracking-wider hover:opacity-75 transition-opacity"
+                   style="font-family:'Cinzel',serif;font-size:11.5px;font-weight:600;color:#362B24;letter-spacing:0.07em;white-space:nowrap;">
+                    <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#362B24" stroke-width="1.8">
+                        <path d="M12 2C8.5 2 5.5 5 5.5 8.5c0 5.5 6.5 10.5 6.5 10.5s6.5-5 6.5-10.5C18.5 5 15.5 2 12 2z"/>
+                        <circle cx="12" cy="8.5" r="2.5"/>
+                        <path d="M4 21h16" stroke-linecap="round"/>
+                    </svg>
+                    BUKA PETUNJUK DI GOOGLE MAPS
+                </a>
+
+                {{-- Bunga Kanan --}}
+                <div class="shrink-0 select-none pointer-events-none ml-1 sm:ml-2" style="width: 48px; height: 38px;">
+                    <img src="{{ asset('assets-website/maps/bunga-kanan-gmaps.svg') }}"
+                         class="w-full h-full object-contain"
+                         alt="Bunga Kanan">
+                </div>
+            </div>
         </div>
     </section>
 
@@ -799,8 +841,15 @@
     {{-- ────────────────────────────────────────────────
          SECTION 5B: GALERI CAROUSEL (DOKUMENTASI CINTA)
          ──────────────────────────────────────────────── --}}
-    <section id="section-galeri" data-scroll-section class="py-12"
+    <section id="section-galeri" data-scroll-section class="pt-5 pb-12"
              style="background:#FAF6EE;border-top:1px solid rgba(223,211,189,0.5);">
+
+        {{-- Ornamen Border Garland Bunga (border-maps.svg) --}}
+        <div data-scroll class="reveal-fade pointer-events-none select-none w-full flex justify-center mb-6 px-3">
+            <img src="{{ asset('assets-website/maps/border-maps.svg') }}"
+                 class="w-full max-w-[368px] h-auto object-contain"
+                 alt="Ornamen Bunga">
+        </div>
 
         <div class="px-6 text-center">
             <p data-scroll class="reveal-up uppercase tracking-widest mb-1.5"
