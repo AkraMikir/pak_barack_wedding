@@ -11,27 +11,27 @@ window.scrollTo(0, 0);
 document.addEventListener('DOMContentLoaded', () => {
     window.scrollTo(0, 0);
 
-    // ── Locomotive Scroll Init ────────────────────────────
+    // ── Locomotive Scroll Init (v5 Modern Lenis setup) ────
     const scrollContainer = document.querySelector('[data-scroll-container]');
 
     let locoScroll = null;
 
     if (scrollContainer) {
         locoScroll = new LocomotiveScroll({
-            el: scrollContainer,
-            smooth: true,
-            lerp: 0.08,
-            multiplier: 1,
-            class: 'is-inview',
-            tablet: { smooth: true, breakpoint: 1024 },
-            smartphone: { smooth: false },
+            lenisOptions: {
+                lerp: 0.09,
+                smoothWheel: true,
+                syncTouch: false, // native touch on smartphone to avoid touch lag
+            },
+            triggerRootMargin: '-8% 0px -8% 0px',
+            rafRootMargin: '100% 100% 100% 100%',
             autoStart: false,
         });
 
-        locoScroll.scrollTo(0, { immediate: true });
-
-        // Update on resize
-        window.addEventListener('resize', () => locoScroll.update());
+        // Update on resize using v5 method
+        window.addEventListener('resize', () => {
+            if (locoScroll) locoScroll.resize();
+        });
     }
 
     // ── Cover Overlay "Buka Undangan" ─────────────────────
@@ -65,22 +65,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 coverOverlay.classList.add('hidden-overlay');
                 document.body.classList.remove('overflow-hidden');
 
-                window.scrollTo(0, 0);
-
                 if (locoScroll) {
                     locoScroll.start();
-                    locoScroll.scrollTo(0, { immediate: true });
-                    locoScroll.scrollTo('#section-ayat', { immediate: true });
-                    locoScroll.update();
+                    locoScroll.resize();
                 }
 
                 setTimeout(() => {
                     coverOverlay.style.display = 'none';
                     if (locoScroll) {
-                        locoScroll.scrollTo('#section-ayat', { immediate: true });
-                        locoScroll.update();
+                        locoScroll.resize();
                     }
-                }, 800);
+                }, 1100);
             }
         });
     });
@@ -130,28 +125,18 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateCountdown, 1000);
 
     // ── Copy to Clipboard ─────────────────────────────────
-    const toast = document.getElementById('copy-toast');
-
-    function showToast(msg) {
-        if (!toast) return;
-        toast.textContent = msg;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2000);
-    }
-
     document.querySelectorAll('[data-copy]').forEach(btn => {
         btn.addEventListener('click', () => {
             const text = btn.dataset.copy;
-            const copyType = btn.dataset.copyType || 'rekening';
-            const toastMsg = copyType === 'alamat' ? 'Alamat kirim tersalin!' : 'Nomor rekening tersalin!';
 
-            navigator.clipboard.writeText(text).then(() => {
+            const handleSuccess = () => {
                 const span = btn.querySelector('span') || btn;
                 const original = span.textContent;
                 span.textContent = 'Tersalin! ✓';
-                showToast(toastMsg);
                 setTimeout(() => { span.textContent = original; }, 2000);
-            }).catch(() => {
+            };
+
+            navigator.clipboard.writeText(text).then(handleSuccess).catch(() => {
                 // Fallback for older browsers
                 const el = document.createElement('textarea');
                 el.value = text;
@@ -159,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 el.select();
                 document.execCommand('copy');
                 document.body.removeChild(el);
-                showToast(toastMsg);
+                handleSuccess();
             });
         });
     });
@@ -238,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } finally {
                 submitBtn.innerHTML = originalHtml;
                 submitBtn.disabled = false;
-                if (locoScroll) setTimeout(() => locoScroll.update(), 300);
+                if (locoScroll) setTimeout(() => locoScroll.resize(), 300);
             }
         });
     }
@@ -260,17 +245,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     return `
                         <div class="wish-card">
-                            <div class="flex items-center justify-between gap-2 mb-2">
-                                <p class="font-bold text-xs uppercase tracking-wide" style="font-family:'Cinzel',serif;color:#362B24;letter-spacing:0.06em;">${escapeHtml(item.guest_name)}</p>
+                            <div class="flex items-center justify-between gap-2 mb-1.5">
+                                <p class="font-bold text-xs uppercase tracking-wider" style="font-family:'Cinzel',serif;color:#2F241D;letter-spacing:0.08em;">${escapeHtml(item.guest_name)}</p>
                                 ${badge}
                             </div>
                             <p class="text-xs sm:text-sm leading-relaxed" style="font-family:'Playfair Display',serif;font-style:italic;color:#5C4B3E;line-height:1.65;">${escapeHtml(item.wishes)}</p>
                         </div>
                     `;
                 }).join('');
-                if (locoScroll) setTimeout(() => locoScroll.update(), 100);
+                if (locoScroll) setTimeout(() => locoScroll.resize(), 100);
             } else {
-                wishesFeed.innerHTML = `<p class="text-center text-sm py-6" style="color:rgba(107,77,56,0.5);font-style:italic;">Belum ada doa &amp; ucapan.</p>`;
+                wishesFeed.innerHTML = `<p class="text-center text-sm py-8 italic" style="font-family:'Playfair Display',serif;color:rgba(107,77,56,0.6);">Belum ada doa &amp; ucapan.</p>`;
             }
         } catch (err) {
             wishesFeed.innerHTML = `<p class="text-center text-sm py-4" style="color:rgba(107,77,56,0.5);">Gagal memuat ucapan.</p>`;
@@ -402,4 +387,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // ── Delman RSVP Scroll Animation (Move straight from left to right on scroll) ──
+    const delmanRsvpWrapper = document.getElementById('delman-rsvp-wrapper');
+    const delmanRsvpContainer = document.getElementById('delman-rsvp-container');
+    const sectionRsvp = document.getElementById('section-rsvp');
+
+    if (delmanRsvpContainer && delmanRsvpWrapper && sectionRsvp) {
+        let isTicking = false;
+
+        const handleDelmanScroll = () => {
+            if (!isTicking) {
+                window.requestAnimationFrame(() => {
+                    const rect = delmanRsvpWrapper.getBoundingClientRect();
+                    const winHeight = window.innerHeight;
+
+                    if (rect.bottom > 0 && rect.top < winHeight + 100) {
+                        const startY = winHeight; // Delman at bottom of screen
+                        const endY = 80;          // Delman reaches near top of screen
+
+                        const progress = (startY - rect.top) / (startY - endY);
+                        const clamped = Math.max(0, Math.min(1, progress));
+
+                        const wrapperWidth = delmanRsvpWrapper.clientWidth || sectionRsvp.clientWidth || 390;
+                        const delmanWidth = delmanRsvpContainer.offsetWidth || 125;
+                        const maxTravel = Math.max(0, wrapperWidth - delmanWidth - 6);
+
+                        const currentX = clamped * maxTravel;
+                        delmanRsvpContainer.style.transform = `translate3d(${currentX.toFixed(1)}px, 0, 0)`;
+                    }
+                    isTicking = false;
+                });
+                isTicking = true;
+            }
+        };
+
+        window.addEventListener('scroll', handleDelmanScroll, { passive: true });
+        window.addEventListener('resize', handleDelmanScroll, { passive: true });
+        if (locoScroll?.lenisInstance) {
+            locoScroll.lenisInstance.on('scroll', handleDelmanScroll);
+        }
+        handleDelmanScroll();
+    }
+
 });
+

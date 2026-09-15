@@ -12,15 +12,184 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        /* Sembunyikan browser scrollbar agar tidak ada pergeseran layout */
+        html, body {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        @media (min-width: 768px) {
+            /* Paksa cover overlay hanya 390px di sisi kanan, overflow terpotong */
+            #cover-overlay {
+                left: auto !important;
+                right: 0 !important;
+                width: 390px !important;
+                overflow: hidden !important;
+                align-items: center !important;
+                box-shadow: -4px 0 25px rgba(0, 0, 0, 0.08);
+            }
+            /* Reset ornamen header — sudah relatif terhadap overlay 390px */
+            #cover-header-ornament {
+                left: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+            }
+            /* Main scroll content: 390px flush kanan */
+            #main-content {
+                max-width: 390px !important;
+                margin-right: 0 !important;
+                margin-left: auto !important;
+                box-shadow: -4px 0 25px rgba(0, 0, 0, 0.08);
+                position: relative !important;
+                z-index: 40 !important;
+                background-color: #FFFCF7 !important;
+            }
+            /* Border bunga pembatas di tumpukan paling atas (di atas cover & main content) */
+            #desktop-seam-border {
+                z-index: 100 !important;
+            }
+        }
+
+        /* ── Desktop Delman Infinite Walk Loop ──────────────── */
+        @keyframes delmanWalkLoop {
+            0% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            12% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            76% {
+                transform: translateX(calc(50vw + 500px));
+                opacity: 1;
+            }
+            76.01% {
+                transform: translateX(calc(50vw + 500px));
+                opacity: 0;
+            }
+            76.5% {
+                transform: translateX(0);
+                opacity: 0;
+            }
+            84% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes carriageTrot {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-2.5px);
+            }
+        }
+
+        .anim-delman-loop {
+            animation: delmanWalkLoop 14s cubic-bezier(0.28, 0, 0.22, 1) infinite;
+        }
+
+        .anim-carriage-trot {
+            animation: carriageTrot 0.7s ease-in-out infinite;
+        }
+    </style>
 </head>
 
 <body class="overflow-x-hidden overflow-hidden" style="background-color:#FFFCF7;" @if(isset($guest) && $guest) data-guest-id="{{ $guest->id }}" @endif>
 
 {{-- ════════════════════════════════════════════════════
+     DESKTOP LEFT PANEL (Sampul / Cover Panel Kiri)
+     Aktif hanya pada tampilan desktop (≥ 768px)
+     ════════════════════════════════════════════════════ --}}
+<div id="desktop-left-panel" class="hidden md:block fixed top-0 left-0 bottom-0 pointer-events-none z-20" style="width: calc(100vw - 390px); overflow: hidden;">
+
+    {{-- Latar Belakang Krem Keemasan Hangat --}}
+    <div class="absolute inset-0" style="background: linear-gradient(135deg, #c5a774 0%, #dabf8f 35%, #ebdab7 70%, #f6ebe0 100%);"></div>
+
+    {{-- Tekstur Batik Kawung Halus / Transparan --}}
+    <div class="absolute inset-0 pointer-events-none"
+         style="background-image: url('{{ asset('assets-website/batik_background.svg') }}'); background-repeat: repeat; background-size: 320px auto; opacity: 1; mix-blend-mode: multiply;"></div>
+
+    {{-- Cahaya / Halo Lembut di Tengah Panel --}}
+    <div class="absolute pointer-events-none"
+         style="width: 540px; height: 540px; border-radius: 9999px; background: radial-gradient(circle, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); filter: blur(28px);"></div>
+
+    {{-- 3 Garis Terputus Desktop (Atas, Kiri, Bawah) Tebal 3px dengan Ujung Rounded --}}
+    {{-- Garis Atas --}}
+    <div class="absolute pointer-events-none rounded-full"
+         style="top: 26px; left: 135px; right: 36px; height: 3px; background-color: rgba(255, 255, 255, 0.82); box-shadow: 0 1px 2px rgba(132, 104, 58, 0.25); z-index: 10;"></div>
+
+    {{-- Garis Kiri --}}
+    <div class="absolute pointer-events-none rounded-full"
+         style="left: 26px; top: 135px; bottom: 135px; width: 3px; background-color: rgba(255, 255, 255, 0.82); box-shadow: 0 1px 2px rgba(132, 104, 58, 0.25); z-index: 10;"></div>
+
+    {{-- Garis Bawah --}}
+    <div class="absolute pointer-events-none rounded-full"
+         style="bottom: 26px; left: 135px; right: 36px; height: 3px; background-color: rgba(255, 255, 255, 0.82); box-shadow: 0 1px 2px rgba(132, 104, 58, 0.25); z-index: 10;"></div>
+
+    {{-- Aksen Sudut Bunga Melati Putih & Daun Tropis (Pojok Kiri Atas) --}}
+    <div class="absolute pointer-events-none z-20" style="top: 14px; left: 14px; width: 115px; height: 115px;">
+        <img src="{{ asset('assets-website/tepiandekstop-tight.png') }}" class="w-full h-full object-contain" alt="ornamen pojok kiri atas">
+    </div>
+
+    {{-- Aksen Sudut Bunga Melati Putih & Daun Tropis (Pojok Kiri Bawah) --}}
+    <div class="absolute pointer-events-none z-20" style="bottom: 14px; left: 14px; width: 115px; height: 115px;">
+        <img src="{{ asset('assets-website/tepiandekstop-tight.png') }}" class="w-full h-full object-contain" style="transform: scaleY(-1);" alt="ornamen pojok kiri bawah">
+    </div>
+
+</div>
+
+{{-- Pembatas Vertikal Border Bunga Antara Kiri dan Kanan (Tumpukan Teratas / z-index: 100) --}}
+<div id="desktop-seam-border" class="hidden md:block fixed top-0 bottom-0 pointer-events-none"
+     style="right: 390px; width: 36px; transform: translateX(50%); z-index: 100; background-image: url('{{ asset('assets-website/border-bunga-vertical.png') }}'); background-repeat: repeat-y; background-size: 36px auto; filter: drop-shadow(0 0 3px rgba(0,0,0,0.15));"></div>
+
+{{-- ════════════════════════════════════════════════════
+     ELEMEN BERGERAK DESKTOP: DELMAN & TEKS (INFINITE LOOP)
+     Bergerak dari tengah panel kiri dan terpotong rapi di batas
+     panel kiri (overflow: hidden), tidak pernah muncul di section kanan.
+     ════════════════════════════════════════════════════ --}}
+<div id="desktop-delman-container" class="hidden md:flex fixed top-0 left-0 bottom-0 pointer-events-none items-center justify-center z-20" style="width: calc(100vw - 390px); overflow: hidden;">
+    <div class="anim-delman-loop flex flex-col items-center text-center select-none" style="width: 380px;">
+        {{-- Teks "The Wedding of" --}}
+        <p class="mb-1" style="font-family:'Alex Brush',cursive; font-size:34px; color:#84683A; text-shadow: 0 1px 2px rgba(255,255,255,0.85); line-height: 1.2;">
+            The Wedding of
+        </p>
+
+        {{-- Ilustrasi Delman Tradisional Jawa --}}
+        <div class="relative w-full flex justify-center my-2">
+            <img src="{{ asset('assets-website/delman-cropped.png') }}"
+                 class="w-[320px] lg:w-[350px] h-auto object-contain anim-carriage-trot drop-shadow-md"
+                 alt="Kereta Kuda Delman Astri & Ridho">
+        </div>
+
+        {{-- Teks "Astri & Ridho" --}}
+        <h2 class="mt-1" style="font-family:'Great Vibes',cursive; font-size:52px; color:#362B24; text-shadow: 0 1px 2px rgba(255,255,255,0.85); line-height: 1.15;">
+            Astri &amp; Ridho
+        </h2>
+    </div>
+</div>
+
+{{-- ════════════════════════════════════════════════════
      COVER OVERLAY (Section 1 – Hero)
      Ditampilkan fullscreen sebelum tamu klik "Buka Undangan"
      ════════════════════════════════════════════════════ --}}
-<div id="cover-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden" style="background-color:#FFFCF7;">
+<div id="cover-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden"
+     style="background-color:#FFFCF7; background-image: url('{{ asset('assets-website/landing-page/background-landing.svg') }}'); background-size: cover; background-position: center;">
 
     <style>
         @keyframes fadeInDownLanding {
@@ -43,15 +212,15 @@
                 transform: translateY(0) scale(1);
             }
         }
-        /* Entrance: Menjalar masuk dari luar frame (outframe jauh) */
+        /* Entrance: Menjalar masuk dari tepi */
         @keyframes creepInTL {
             0% {
                 opacity: 0;
-                transform: translate(-70px, -45px) scale(0.6) rotate(-22deg);
+                transform: translate(-40px, -30px) scale(0.8) rotate(-10deg);
             }
             70% {
                 opacity: 1;
-                transform: translate(4px, 2px) scale(1.04) rotate(2deg);
+                transform: translate(2px, 2px) scale(1.02) rotate(1deg);
             }
             100% {
                 opacity: 1;
@@ -61,11 +230,11 @@
         @keyframes creepInBL {
             0% {
                 opacity: 0;
-                transform: translate(-70px, 50px) scale(0.6) rotate(22deg);
+                transform: translate(-40px, 30px) scale(0.8) rotate(10deg);
             }
             70% {
                 opacity: 1;
-                transform: translate(4px, -2px) scale(1.04) rotate(-2deg);
+                transform: translate(2px, -2px) scale(1.02) rotate(-1deg);
             }
             100% {
                 opacity: 1;
@@ -75,11 +244,11 @@
         @keyframes creepInTR {
             0% {
                 opacity: 0;
-                transform: translate(70px, -45px) scale(0.6) rotate(22deg);
+                transform: translate(40px, -30px) scale(0.8) rotate(10deg);
             }
             70% {
                 opacity: 1;
-                transform: translate(-4px, 2px) scale(1.04) rotate(-2deg);
+                transform: translate(-2px, 2px) scale(1.02) rotate(-1deg);
             }
             100% {
                 opacity: 1;
@@ -89,11 +258,11 @@
         @keyframes creepInBR {
             0% {
                 opacity: 0;
-                transform: translate(70px, 50px) scale(0.6) rotate(-22deg);
+                transform: translate(40px, 30px) scale(0.8) rotate(-10deg);
             }
             70% {
                 opacity: 1;
-                transform: translate(-4px, -2px) scale(1.04) rotate(2deg);
+                transform: translate(-2px, -2px) scale(1.02) rotate(1deg);
             }
             100% {
                 opacity: 1;
@@ -107,10 +276,10 @@
                 transform: rotate(0deg) translate(0, 0);
             }
             35% {
-                transform: rotate(3deg) translate(1.5px, -2px);
+                transform: rotate(2.5deg) translate(1px, -1.5px);
             }
             70% {
-                transform: rotate(-2.5deg) translate(-1px, 1.5px);
+                transform: rotate(-2deg) translate(-1px, 1px);
             }
         }
         @keyframes windSwayRight {
@@ -118,16 +287,13 @@
                 transform: rotate(0deg) translate(0, 0);
             }
             35% {
-                transform: rotate(-3deg) translate(-1.5px, -2px);
+                transform: rotate(-2.5deg) translate(-1px, -1.5px);
             }
             70% {
-                transform: rotate(2.5deg) translate(1px, 1.5px);
+                transform: rotate(2deg) translate(1px, 1px);
             }
         }
 
-        .anim-header-landing {
-            animation: fadeInDownLanding 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
         .anim-pengantin-landing {
             opacity: 0;
             animation: fadeInUpLanding 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards;
@@ -199,124 +365,123 @@
         }
     </style>
 
-    {{-- Ornamen atas --}}
-    <div class="absolute top-0 left-0 right-0 pointer-events-none flex justify-center z-10">
-        <img src="{{ asset('assets-website/header-landing.svg') }}"
-             class="w-full max-w-[412px] h-auto object-contain anim-header-landing" alt="ornamen header">
-    </div>
-
-    {{-- Konten utama cover --}}
-    <div class="relative z-10 flex flex-col items-center px-6 text-center w-full max-w-[412px]" style="padding-top:4.25rem;padding-bottom:2rem;">
+    {{-- Konten utama cover (Frame 412px) --}}
+    <div class="relative z-10 flex flex-col items-center justify-between w-full max-w-[412px] h-full min-h-[100dvh] max-h-[773px] px-5 py-4 text-center overflow-hidden">
 
         {{-- Halo light blur --}}
         <div class="absolute pointer-events-none" style="width:288px;height:288px;background:rgba(212,181,128,0.22);filter:blur(32px);border-radius:9999px;top:45%;left:50%;transform:translate(-50%,-50%);z-index:0;"></div>
 
-        {{-- Karakter ilustrasi pengantin landing & Side Assets --}}
-        <div class="relative z-10 mb-2 w-full flex items-center justify-center anim-pengantin-landing" style="gap: 10px;">
-            {{-- Ornamen Samping Kiri --}}
-            <div class="flex-shrink-0 flex items-center justify-center" style="width: 44px;">
-                <img src="{{ asset('assets-website/side-asset-pengantin-kiri.svg') }}"
-                     class="w-full h-auto object-contain" alt="ornamen samping kiri">
-            </div>
+        {{-- ── FOLIAGE SUDUT KIRI ATAS ── --}}
+        <div class="absolute top-0 left-0 pointer-events-none anim-creep-tl" style="z-index: 5; width: 110px; height: 180px;">
+            <img src="{{ asset('assets-website/landing-page/daun-landing-kiri-atas-atas.svg') }}"
+                 class="absolute top-0 left-0 w-[78px] h-auto object-contain sway-wind-left" alt="daun kiri atas">
+            <img src="{{ asset('assets-website/landing-page/daun-landing-kiri-atas-bawah.svg') }}"
+                 class="absolute top-[20px] left-0 w-[96px] h-auto object-contain sway-wind-left" alt="daun kiri atas bawah">
+            <img src="{{ asset('assets-website/landing-page/bunga-landing-kiri-atas.svg') }}"
+                 class="absolute top-[68px] left-[38px] w-[42px] h-auto object-contain sway-wind-left drop-shadow-sm" alt="bunga kiri atas">
+        </div>
 
-            {{-- Ilustrasi Pengantin --}}
-            <div class="flex-shrink-0 flex justify-center" style="width: 185px;">
-                <img src="{{ asset('assets-website/pengantin-landing.svg') }}"
+        {{-- ── FOLIAGE SUDUT KANAN ATAS ── --}}
+        <div class="absolute top-0 right-0 pointer-events-none anim-creep-tr" style="z-index: 5; width: 125px; height: 160px;">
+            <img src="{{ asset('assets-website/landing-page/daun-landing-kanan-atas-atas.svg') }}"
+                 class="absolute top-0 right-0 w-[114px] h-auto object-contain sway-wind-right" alt="daun kanan atas">
+            <img src="{{ asset('assets-website/landing-page/daun-landing-kanan-atas-bawah.svg') }}"
+                 class="absolute top-[18px] right-0 w-[98px] h-auto object-contain sway-wind-right" alt="daun kanan atas bawah">
+            <img src="{{ asset('assets-website/landing-page/bunga-landing-kanan-atas.svg') }}"
+                 class="absolute top-[62px] right-[32px] w-[46px] h-auto object-contain sway-wind-right drop-shadow-sm" alt="bunga kanan atas">
+        </div>
+
+        {{-- ── ILUSTRASI PENGANTIN ── --}}
+        <div class="relative z-10 w-full flex justify-center pt-2 anim-pengantin-landing">
+            <div class="flex justify-center" style="width: 204px;">
+                <img src="{{ asset('assets-website/landing-page/pengantin-landing-new.svg') }}"
                      class="w-full h-auto object-contain drop-shadow-sm" alt="pengantin">
-            </div>
-
-            {{-- Ornamen Samping Kanan --}}
-            <div class="flex-shrink-0 flex items-center justify-center" style="width: 44px;">
-                <img src="{{ asset('assets-website/side-asset-pengantin-kanan.svg') }}"
-                     class="w-full h-auto object-contain" alt="ornamen samping kanan">
             </div>
         </div>
 
-        {{-- Title Area with Floral Frame (Outframe Placement) --}}
-        <div class="relative z-10 w-full flex flex-col items-center my-1 py-1" style="overflow: visible;">
-            {{-- Bunga Kiri Atas (Outframe menempel tepi luar) --}}
-            <div class="absolute pointer-events-none anim-creep-tl" style="top: -48px; left: -92px; width: 168px; z-index: 6;">
-                <img src="{{ asset('assets-website/bunga-titlelanding-kiri-atas.svg') }}"
-                     class="w-full h-auto object-contain sway-wind-left" alt="bunga kiri atas">
+        {{-- ── TITLE AREA (FLANKED BY MID FOLIAGE) ── --}}
+        <div class="relative z-10 w-full flex flex-col items-center my-0 py-0" style="overflow: visible;">
+            {{-- Foliage Samping Kiri --}}
+            <div class="absolute pointer-events-none anim-creep-bl" style="top: -45px; left: -20px; width: 115px; z-index: 5;">
+                <img src="{{ asset('assets-website/landing-page/daun-landing-kiri-bawah-atas.svg') }}"
+                     class="absolute top-0 left-0 w-[110px] h-auto object-contain sway-wind-bl" alt="daun kiri tengah atas">
+                <img src="{{ asset('assets-website/landing-page/daun-landing-kiri-bawah-bawah.svg') }}"
+                     class="absolute top-[80px] left-0 w-[78px] h-auto object-contain sway-wind-bl" alt="daun kiri tengah bawah">
+                <img src="{{ asset('assets-website/landing-page/bunga-landing-kiri-atas.svg') }}"
+                     class="absolute top-[8px] left-[34px] w-[40px] h-auto object-contain sway-wind-left drop-shadow-sm" alt="bunga kiri tengah">
             </div>
 
-            {{-- Bunga Kiri Bawah (Outframe menempel tepi luar) --}}
-            <div class="absolute pointer-events-none anim-creep-bl" style="bottom: -6px; left: -136px; width: 175px; z-index: 5;">
-                <img src="{{ asset('assets-website/bunga-titlelanding-kiri-bawah.svg') }}"
-                     class="w-full h-auto object-contain sway-wind-bl" alt="bunga kiri bawah">
-            </div>
-
-            {{-- Bunga Kanan Atas (Outframe menempel tepi luar) --}}
-            <div class="absolute pointer-events-none anim-creep-tr" style="top: -36px; right: -75px; width: 172px; z-index: 6;">
-                <img src="{{ asset('assets-website/bunga-titlelanding-kanan-atas.svg') }}"
-                     class="w-full h-auto object-contain sway-wind-right" alt="bunga kanan atas">
-            </div>
-
-            {{-- Bunga Kanan Bawah (Outframe menempel tepi luar) --}}
-            <div class="absolute pointer-events-none anim-creep-br" style="bottom: -20px; right: -122px; width: 168px; z-index: 5;">
-                <img src="{{ asset('assets-website/bunga-titlelanding-kanan-bawah.svg') }}"
-                     class="w-full h-auto object-contain sway-wind-br" alt="bunga kanan bawah">
+            {{-- Foliage Samping Kanan --}}
+            <div class="absolute pointer-events-none anim-creep-br" style="top: -40px; right: -20px; width: 120px; z-index: 5;">
+                <img src="{{ asset('assets-website/landing-page/daun-landing-kanan-bawah-atas.svg') }}"
+                     class="absolute top-0 right-0 w-[96px] h-auto object-contain sway-wind-br" alt="daun kanan tengah atas">
+                <img src="{{ asset('assets-website/landing-page/daun-landing-kanan-bawah-bawah.svg') }}"
+                     class="absolute top-[75px] right-0 w-[115px] h-auto object-contain sway-wind-br" alt="daun kanan tengah bawah">
+                <img src="{{ asset('assets-website/landing-page/bunga-landing-kanan-atas.svg') }}"
+                     class="absolute top-[22px] right-[32px] w-[46px] h-auto object-contain sway-wind-right drop-shadow-sm" alt="bunga kanan tengah">
             </div>
 
             {{-- "The Wedding of" --}}
-            <p class="relative z-10 mb-1" style="font-family:'Alex Brush',cursive;font-size:24px;color:#A17839;line-height:32px;">
+            <p class="relative z-10 mb-0.5" style="font-family:'Alex Brush',cursive;font-size:24px;color:#A17839;line-height:30px;">
                 The Wedding of
             </p>
 
             {{-- Nama besar --}}
-            <h1 class="relative z-10 mb-1" style="font-family:'Great Vibes',cursive;font-size:54px;line-height:1.2;color:#3A2517;letter-spacing:0.025em;">
+            <h1 class="relative z-10 mb-0.5" style="font-family:'Great Vibes',cursive;font-size:50px;line-height:1.15;color:#3A2517;letter-spacing:0.025em;">
                 Astri &amp; Ridho
             </h1>
 
             {{-- Divider emas --}}
-            <div class="gold-divider relative z-10 my-2.5" style="width:160px;"></div>
+            <div class="gold-divider relative z-10 my-2" style="width:140px;"></div>
 
             {{-- Nama lengkap --}}
-            <p class="relative z-10 tracking-widest uppercase mb-4" style="font-family:'Cinzel',serif;font-size:10.5px;color:#6B4D38;letter-spacing:0.2em;">
+            <p class="relative z-10 tracking-widest uppercase mb-1" style="font-family:'Cinzel',serif;font-size:10px;color:#6B4D38;letter-spacing:0.2em;">
                 SULASTRI &amp; RIDHO IRIANO SUDARMAZENA
             </p>
         </div>
 
-        {{-- Card tamu undangan --}}
-        <div class="relative z-10 w-full mb-4 text-center anim-fade-card"
-             style="background:rgba(240,228,206,0.45);border-top:1px solid rgba(161,120,57,0.35);border-bottom:1px solid rgba(161,120,57,0.35);backdrop-filter:blur(2px);padding:24px 20px;overflow:visible;">
+        {{-- ── CARD TAMU UNDANGAN ── --}}
+        <div class="relative z-10 w-full text-center anim-fade-card"
+             style="background:rgba(240,228,206,0.55);border-top:1px solid rgba(161,120,57,0.35);border-bottom:1px solid rgba(161,120,57,0.35);backdrop-filter:blur(2px);padding:18px 16px;overflow:visible;">
 
-            {{-- Corner Ornamen Kiri Atas Tamu (Hovering di luar border) --}}
-            <div class="absolute pointer-events-none anim-float-corner-tl" style="top: -18px; left: -16px; width: 84px; z-index: 2;">
-                <img src="{{ asset('assets-website/corner-kiri-atas-tamu.svg') }}"
+            {{-- Corner Ornamen Kiri Atas Tamu --}}
+            <div class="absolute pointer-events-none anim-float-corner-tl" style="top: -14px; left: -14px; width: 84px; z-index: 15;">
+                <img src="{{ asset('assets-website/landing-page/corner-kiri-atas-tamu.svg') }}"
                      class="w-full h-auto object-contain drop-shadow-sm" alt="corner kiri atas tamu">
             </div>
 
-            {{-- Corner Ornamen Kanan Bawah Tamu (Hovering di luar border) --}}
-            <div class="absolute pointer-events-none anim-float-corner-br" style="bottom: -18px; right: -16px; width: 84px; z-index: 10;">
-                <img src="{{ asset('assets-website/corner-kanan-bawah-tamu.svg') }}"
+            {{-- Corner Ornamen Kanan Bawah Tamu --}}
+            <div class="absolute pointer-events-none anim-float-corner-br" style="bottom: -14px; right: -14px; width: 84px; z-index: 15;">
+                <img src="{{ asset('assets-website/landing-page/corner-kanan-bawah-tamu.svg') }}"
                      class="w-full h-auto object-contain drop-shadow-sm" alt="corner kanan bawah tamu">
             </div>
 
-            <p class="uppercase tracking-widest text-center mb-1.5"
-               style="font-family:'Cinzel',serif;font-size:10px;color:#6B4D38;letter-spacing:0.22em;">
+            <p class="uppercase tracking-widest text-center mb-1"
+               style="font-family:'Cinzel',serif;font-size:9.5px;color:#6B4D38;letter-spacing:0.22em;">
                 KEPADA YTH. BAPAK/IBU/SAUDARA/I:
             </p>
             <p class="text-center font-bold"
-               style="font-family:'Playfair Display',serif;font-size:20px;color:#3A2517;">
+               style="font-family:'Playfair Display',serif;font-size:19px;color:#3A2517;">
                 {{ isset($guest) && $guest ? $guest->name : request()->query('to', 'Tamu Undangan') }}
             </p>
-            <p class="text-center italic mt-1.5"
-               style="font-family:'Playfair Display',serif;font-size:9.5px;color:rgba(107,77,56,0.65);">
+            <p class="text-center italic mt-1"
+               style="font-family:'Playfair Display',serif;font-size:9px;color:rgba(107,77,56,0.65);">
                 *Mohon maaf apabila ada kesalahan penulisan nama/gelar
             </p>
         </div>
 
-        {{-- CTA Button --}}
-        <button data-buka-undangan
-            class="relative z-10 flex items-center gap-2.5 px-8 py-3 rounded-full uppercase tracking-widest transition-opacity hover:opacity-80 active:scale-95 shadow-md"
-            style="background:#3A2517;border:1px solid #A17839;font-family:'Cinzel',serif;font-size:11.5px;color:#FAF0DF;letter-spacing:0.2em;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-            </svg>
-            BUKA UNDANGAN
-        </button>
+        {{-- ── CTA BUTTON ── --}}
+        <div class="relative z-10 w-full flex justify-center pb-1">
+            <button data-buka-undangan
+                class="flex items-center gap-2.5 px-8 py-2.5 rounded-full uppercase tracking-widest transition-transform hover:scale-105 active:scale-95 shadow-md"
+                style="background:#3A2517;border:1px solid #A17839;font-family:'Cinzel',serif;font-size:11px;color:#FAF0DF;letter-spacing:0.2em;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                </svg>
+                BUKA UNDANGAN
+            </button>
+        </div>
     </div>
 </div>
 
@@ -328,51 +493,86 @@
     {{-- ────────────────────────────────────────────────
          SECTION 2: AYAT SUCI
          ──────────────────────────────────────────────── --}}
-    <section id="section-ayat" data-scroll-section class="px-6 py-10 flex flex-col items-center text-center"
+    <section id="section-ayat" data-scroll-section class="relative w-full overflow-hidden flex flex-col items-center text-center pt-8 pb-0"
              style="background-color:#FFFCF7;">
 
-        <div data-scroll class="reveal-scale w-32 gold-divider mb-6"></div>
+        {{-- Ornamen Atas (Header Motif Doa) --}}
+        <div data-scroll class="reveal-down anim-float-gentle relative z-10 w-full flex justify-center mb-3 sm:mb-4 px-4">
+            <img src="{{ asset('assets-website/ayat-suci/border-doa.svg') }}"
+                 class="w-full max-w-[310px] sm:max-w-[330px] h-auto object-contain pointer-events-none select-none"
+                 alt="Ornamen Ayat Suci">
+        </div>
 
-        <p data-scroll class="reveal-up"
-           style="font-family:'Alex Brush',cursive;font-size:24px;color:#84683A;line-height:32px;">
+        {{-- Teks "Maha Suci Allah" --}}
+        <p data-scroll class="reveal-up delay-100 relative z-10 mb-3"
+           style="font-family:'Alex Brush',cursive;font-size:30px;color:#84683A;line-height:1.2;">
             Maha Suci Allah
         </p>
 
-        <div data-scroll class="reveal-up delay-200 my-2 px-4">
-            <p class="italic text-center leading-relaxed"
-               style="font-family:'Playfair Display',serif;font-size:15px;color:#4A3B32;line-height:1.7;">
-                "Dan di antara tanda-tanda kekuasaan-Nya<br>
+        {{-- Ayat Al-Qur'an --}}
+        <div data-scroll class="reveal-up delay-200 relative z-10 px-5 max-w-[360px] mb-2">
+            <p class="text-center font-bold"
+               style="font-family:'Playfair Display',serif;font-size:14px;color:#3A2517;line-height:1.75;">
+                &ldquo;Dan di antara tanda-tanda kekuasaan-Nya<br>
                 ialah diciptakan-Nya untukmu pasangan hidup<br>
                 dari jenismu sendiri, supaya kamu mendapat<br>
                 ketenangan dan dijadikan-Nya di antaramu<br>
                 kasih sayang. Sesungguhnya yang demikian itu<br>
                 merupakan tanda-tanda kebesaran-Nya bagi<br>
-                orang-orang yang berfikir."
+                orang-orang yang berfikir.&rdquo;
             </p>
         </div>
 
-        <p data-scroll class="reveal-up delay-300 mt-3 uppercase tracking-widest font-bold"
-           style="font-family:'Cinzel',serif;font-size:12px;color:#84683A;letter-spacing:0.2em;">
-            — QS. AR-RUM : 21 —
-        </p>
+        {{-- Area Bawah: Ornamen Daun Kiri & Kanan Flanking QS. AR-RUM : 21 --}}
+        <div class="relative w-full flex flex-col items-center justify-center pt-3 pb-6 min-h-[110px] overflow-hidden">
+            {{-- Ornamen Daun Kiri --}}
+            <div data-scroll data-scroll-speed="0.35" class="reveal-left delay-200 anim-sway-leaf absolute left-0 bottom-0 pointer-events-none z-0"
+                 style="width: 125px; transform-origin: bottom left;">
+                <img src="{{ asset('assets-website/ayat-suci/daun-kiri-doa.svg') }}"
+                     class="w-full h-auto object-contain select-none"
+                     alt="Ornamen Daun Kiri">
+            </div>
 
-        <div data-scroll class="reveal-scale w-32 gold-divider mt-6"></div>
+            {{-- Teks Surat & Pembatas Garis Emas --}}
+            <div data-scroll class="reveal-up delay-300 relative z-10 flex flex-col items-center px-4">
+                <p class="uppercase tracking-widest font-bold"
+                   style="font-family:'Cinzel',serif;font-size:12px;color:#84683A;letter-spacing:0.2em;">
+                    — QS. AR-RUM : 21 —
+                </p>
+                <div class="gold-divider w-28 sm:w-32 mt-2" style="opacity: 0.85;"></div>
+            </div>
+
+            {{-- Ornamen Daun Kanan --}}
+            <div data-scroll data-scroll-speed="0.35" class="reveal-right delay-200 anim-sway-leaf absolute right-0 bottom-0 pointer-events-none z-0"
+                 style="width: 125px; transform-origin: bottom right;">
+                <img src="{{ asset('assets-website/ayat-suci/daun-kanan-doa.svg') }}"
+                     class="w-full h-auto object-contain select-none"
+                     alt="Ornamen Daun Kanan">
+            </div>
+        </div>
     </section>
 
     {{-- ────────────────────────────────────────────────
          SECTION 3: MEMPELAI PROFILES
          ──────────────────────────────────────────────── --}}
-    <section id="section-mempelai" data-scroll-section class="px-6 py-8 flex flex-col items-center text-center"
+    <section id="section-mempelai" data-scroll-section class="relative px-6 py-8 flex flex-col items-center text-center overflow-hidden"
              style="background-color:#FFFCF7;">
 
+        {{-- Background Motif Pasangan --}}
+        <div class="absolute inset-0 pointer-events-none select-none z-0">
+            <img src="{{ asset('assets-website/pasangan-mempelai/backgroud-pasangan.svg') }}"
+                 class="w-full h-full object-cover select-none"
+                 alt="Background Pasangan">
+        </div>
+
         {{-- Header --}}
-        <div class="mb-8">
+        <div class="relative z-10 mb-8">
             <p data-scroll class="reveal-up uppercase tracking-widest mb-1"
                style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.25em;">
                 PASANGAN MEMPELAI
             </p>
             <h2 data-scroll class="reveal-up delay-100 font-bold"
-                style="font-family:'Playfair Display',serif;font-size:24px;color:#362B24;line-height:32px;">
+               style="font-family:'Playfair Display',serif;font-size:24px;color:#362B24;line-height:32px;">
                 Dua Jiwa Satu Ikatan
             </h2>
             <p data-scroll class="reveal-up delay-200 mt-1 text-sm leading-relaxed"
@@ -384,14 +584,25 @@
         </div>
 
         {{-- Pasangan Mempelai Berdampingan --}}
-        <div class="flex items-start justify-center gap-3 w-full">
+        <div class="relative z-10 flex items-start justify-center gap-3 w-full">
 
             {{-- Mempelai Wanita --}}
             <div data-scroll class="reveal-left delay-100 flex flex-col items-center flex-1 max-w-[155px]">
-                <div class="w-full overflow-hidden shadow-xs" style="height:270px;border-top-left-radius:90px;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0;border:1px solid rgba(161,120,57,0.4);background:rgba(161,120,57,0.08);">
-                    <img src="{{ !empty($fotoWanita) ? asset('storage/' . $fotoWanita) : 'https://www.figma.com/img/7cc24d15e7d17075dbc79500643b0ea0c8f551e9' }}"
-                         onerror="this.style.background='rgba(161,120,57,0.15)'"
-                         class="w-full h-full object-cover object-top" alt="Sulastri">
+                <div class="relative w-full">
+                    {{-- Ornamen Payung Kiri (Melayang dengan Parallax) --}}
+                    <div data-scroll data-scroll-speed="0.5" class="absolute -top-6 -left-5 z-20 pointer-events-none select-none anim-float-rot"
+                         style="width:62px;height:70px;">
+                        <img src="{{ asset('assets-website/pasangan-mempelai/payung-kiri-foto-mempelai.svg') }}"
+                             class="w-full h-auto object-contain select-none"
+                             alt="Ornamen Payung">
+                    </div>
+
+                    {{-- Frame Foto --}}
+                    <div class="w-full overflow-hidden shadow-xs relative z-10" style="height:270px;border-top-left-radius:90px;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0;border:1px solid rgba(161,120,57,0.4);background:rgba(161,120,57,0.08);">
+                        <img src="{{ !empty($fotoWanita) ? asset('storage/' . $fotoWanita) : 'https://www.figma.com/img/7cc24d15e7d17075dbc79500643b0ea0c8f551e9' }}"
+                             onerror="this.style.background='rgba(161,120,57,0.15)'"
+                             class="w-full h-full object-cover object-top" alt="Sulastri">
+                    </div>
                 </div>
                 <p class="mt-3" style="font-family:'Great Vibes',cursive;font-size:36px;color:#362B24;">Sulastri</p>
                 <p style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.1em;">( Astri )</p>
@@ -402,18 +613,29 @@
             </div>
 
             {{-- Ampersand tengah --}}
-            <div data-scroll class="reveal-fade delay-300 flex flex-col items-center justify-center flex-shrink-0 pt-10" style="width:36px;">
-                <div class="gold-divider-v" style="height:70px;margin-bottom:8px;"></div>
+            <div data-scroll class="reveal-scale-in delay-200 flex flex-col items-center justify-center flex-shrink-0 pt-10" style="width:36px;">
+                <div data-scroll class="reveal-scale gold-divider-v" style="height:70px;margin-bottom:8px;"></div>
                 <p style="font-family:'Great Vibes',cursive;font-size:42px;color:#84683A;line-height:1;">&amp;</p>
-                <div class="gold-divider-v" style="height:70px;margin-top:8px;"></div>
+                <div data-scroll class="reveal-scale delay-200 gold-divider-v" style="height:70px;margin-top:8px;"></div>
             </div>
 
             {{-- Mempelai Pria --}}
             <div data-scroll class="reveal-right delay-100 flex flex-col items-center flex-1 max-w-[155px]">
-                <div class="w-full overflow-hidden shadow-xs" style="height:270px;border-top-right-radius:90px;border-top-left-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0;border:1px solid rgba(161,120,57,0.4);background:rgba(161,120,57,0.08);">
-                    <img src="{{ !empty($fotoPria) ? asset('storage/' . $fotoPria) : 'https://www.figma.com/img/7cc24d15e7d17075dbc79500643b0ea0c8f551e9' }}"
-                         onerror="this.style.background='rgba(161,120,57,0.15)'"
-                         class="w-full h-full object-cover object-top" alt="Ridho">
+                <div class="relative w-full">
+                    {{-- Ornamen Keris Kanan (Melayang dengan Parallax) --}}
+                    <div data-scroll data-scroll-speed="0.5" class="absolute -top-7 -right-4 z-20 pointer-events-none select-none anim-float-gentle"
+                         style="width:58px;height:79px;">
+                        <img src="{{ asset('assets-website/pasangan-mempelai/keris-kanan-foto-mempelai.svg') }}"
+                             class="w-full h-auto object-contain select-none"
+                             alt="Ornamen Keris">
+                    </div>
+
+                    {{-- Frame Foto --}}
+                    <div class="w-full overflow-hidden shadow-xs relative z-10" style="height:270px;border-top-right-radius:90px;border-top-left-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0;border:1px solid rgba(161,120,57,0.4);background:rgba(161,120,57,0.08);">
+                        <img src="{{ !empty($fotoPria) ? asset('storage/' . $fotoPria) : 'https://www.figma.com/img/7cc24d15e7d17075dbc79500643b0ea0c8f551e9' }}"
+                             onerror="this.style.background='rgba(161,120,57,0.15)'"
+                             class="w-full h-full object-cover object-top" alt="Ridho">
+                    </div>
                 </div>
                 <p class="mt-3" style="font-family:'Great Vibes',cursive;font-size:36px;color:#362B24;">Ridho</p>
                 <p style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.1em;">( Ridho )</p>
@@ -437,21 +659,38 @@
             } catch (\Exception $e) {
                 $eventDate = \Carbon\Carbon::parse('2026-10-23T08:00')->locale('id');
             }
-            $formattedWeddingDate = $eventDate->isoFormat('dddd, D MMMM Y');
+            $formattedWeddingDate = str_replace('Jumat', "Jum'at", $eventDate->isoFormat('dddd, D MMMM Y'));
             $startUtc = $eventDate->copy()->setTimezone('UTC')->format('Ymd\THis\Z');
             $endUtc = $eventDate->copy()->addHours(6)->setTimezone('UTC')->format('Ymd\THis\Z');
             $calendarUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' . urlencode('Pernikahan Astri & Ridho') . '&dates=' . $startUtc . '/' . $endUtc . '&details=' . urlencode('Akad Nikah & Resepsi Pernikahan Sulastri & Ridho Iriano Sudarmazena') . '&location=' . urlencode('Jln. Lombok RT 05 RW 01, Ds. Mergawati, Kec. Kroya, Kab. Cilacap');
         @endphp
 
         <div class="px-6 pt-7 pb-8 text-center">
-            <p data-scroll class="reveal-up uppercase tracking-widest mb-2 text-center"
-               style="font-family:'Cinzel',serif;font-size:11px;color:#8B6C3F;letter-spacing:0.28em;">
-                MENUJU HARI BAHAGIA
-            </p>
-            <h2 data-scroll class="reveal-up delay-100 font-bold mb-8 text-center"
-                style="font-family:'Playfair Display',serif;font-size:24px;color:#2F241D;letter-spacing:0.01em;">
-                {{ $formattedWeddingDate }}
-            </h2>
+            {{-- Header with flanking flower ornaments --}}
+            <div class="relative w-full max-w-sm mx-auto mb-8">
+                {{-- Ornamen Bunga Kiri --}}
+                <div data-scroll class="reveal-left delay-100 anim-sway-leaf absolute pointer-events-none select-none z-10"
+                     style="top: -14px; left: -8px; width: 57px;">
+                    <img src="{{ asset('assets-website/tanggal-main/bunga-kiri-tanggal.svg') }}"
+                         class="w-full h-auto object-contain" alt="ornamen bunga kiri">
+                </div>
+
+                {{-- Ornamen Bunga Kanan --}}
+                <div data-scroll class="reveal-right delay-100 anim-sway-leaf absolute pointer-events-none select-none z-10"
+                     style="top: -16px; right: -2px; width: 55px;">
+                    <img src="{{ asset('assets-website/tanggal-main/bunga-kanan-tanggal.svg') }}"
+                         class="w-full h-auto object-contain" alt="ornamen bunga kanan">
+                </div>
+
+                <p data-scroll class="reveal-up uppercase tracking-widest mb-2 text-center"
+                   style="font-family:'Cinzel',serif;font-size:11px;color:#8B6C3F;letter-spacing:0.28em;">
+                    MENUJU HARI BAHAGIA
+                </p>
+                <h2 data-scroll class="reveal-up delay-100 font-bold text-center"
+                    style="font-family:'Playfair Display',serif;font-size:24px;color:#2F241D;letter-spacing:0.01em;">
+                    {{ $formattedWeddingDate }}
+                </h2>
+            </div>
 
             {{-- Countdown boxes --}}
             <div data-scroll data-countdown-container data-target-date="{{ $weddingDate }}" class="reveal-up delay-200 flex gap-2.5 w-full max-w-sm mx-auto mb-8">
@@ -477,7 +716,7 @@
             <div data-scroll class="reveal-up delay-300 flex justify-center">
                 <a href="{{ $calendarUrl }}"
                    target="_blank"
-                   class="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full uppercase tracking-wider hover:bg-stone-100 transition-all active:scale-95 shadow-2xs"
+                   class="anim-pulse-gold inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full uppercase tracking-wider hover:bg-stone-100 transition-all active:scale-95 shadow-2xs"
                    style="border:1.5px solid #84683A;background-color:#FAF6EE;font-family:'Cinzel',serif;font-size:11px;font-weight:600;color:#2F241D;letter-spacing:0.12em;">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2F241D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -499,7 +738,14 @@
     <section id="section-acara" data-scroll-section class="px-6 py-10 flex flex-col items-center"
              style="background-color:#FFFCF7;">
 
-        <p data-scroll class="reveal-up uppercase tracking-widest"
+        {{-- Ornamen Wayang & Gunungan Header Waktu & Lokasi --}}
+        <div data-scroll class="reveal-scale-in relative z-10 w-full flex justify-center mb-3 sm:mb-4 px-2">
+            <img src="{{ asset('assets-website/rangkaian-acara/border-waktu-lokasi.svg') }}"
+                 class="w-full max-w-[340px] sm:max-w-[360px] h-auto object-contain pointer-events-none select-none"
+                 alt="Ornamen Waktu & Lokasi">
+        </div>
+
+        <p data-scroll class="reveal-up uppercase tracking-widest text-center"
            style="font-family:'Cinzel',serif;font-size:10px;color:#84683A;letter-spacing:0.25em;">
             WAKTU &amp; LOKASI
         </p>
@@ -509,8 +755,17 @@
         </h2>
 
         {{-- Akad Nikah --}}
-        <div data-scroll class="reveal-up delay-200 w-full text-center pb-6"
+        <div data-scroll class="reveal-up delay-200 relative w-full text-center pb-6"
              style="border-bottom:1px solid #DFD3BD;">
+
+            {{-- Ornamen Cincin Kawin & Bantal di Kiri (Melayang dengan Parallax) --}}
+            <div data-scroll data-scroll-speed="0.35" class="absolute -left-2 sm:left-0 top-0 pointer-events-none select-none z-10 anim-float-rot"
+                 style="width: 86px;">
+                <img src="{{ asset('assets-website/rangkaian-acara/cincin-waktu-lokasi.svg') }}"
+                     class="w-full h-auto object-contain select-none drop-shadow-xs"
+                     alt="Ornamen Cincin Akad Nikah">
+            </div>
+
             <p class="uppercase tracking-widest mb-1"
                style="font-family:'Cinzel',serif;font-size:12px;color:#84683A;letter-spacing:0.2em;">IJAB QABUL</p>
             <h3 class="font-bold" style="font-family:'Playfair Display',serif;font-size:20px;color:#362B24;">Akad Nikah</h3>
@@ -522,8 +777,17 @@
         </div>
 
         {{-- Resepsi --}}
-        <div data-scroll class="reveal-up delay-300 w-full text-center pt-8 pb-6"
+        <div data-scroll class="reveal-up delay-300 relative w-full text-center pt-8 pb-6"
              style="border-bottom:1px solid #DFD3BD;">
+
+            {{-- Ornamen Teko & Melati di Kanan (Melayang dengan Parallax) --}}
+            <div data-scroll data-scroll-speed="0.35" class="absolute -right-2 sm:right-0 pointer-events-none select-none z-10 anim-float-gentle"
+                 style="width: 72px; top: 46px;">
+                <img src="{{ asset('assets-website/rangkaian-acara/teko-resepsi.svg') }}"
+                     class="w-full h-auto object-contain select-none drop-shadow-xs"
+                     alt="Ornamen Teko Resepsi">
+            </div>
+
             <p class="uppercase tracking-widest mb-1"
                style="font-family:'Cinzel',serif;font-size:12px;color:#84683A;letter-spacing:0.2em;">WALIMATUL 'URSY</p>
             <h3 class="font-bold" style="font-family:'Playfair Display',serif;font-size:20px;color:#362B24;">Resepsi Pernikahan</h3>
@@ -535,26 +799,68 @@
         </div>
 
         {{-- Maps --}}
-        <div data-scroll class="reveal-up delay-400 w-full mt-6">
-            <div class="rounded-lg overflow-hidden mb-3" style="border:1px solid rgba(220,200,166,0.8);box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.3!2d109.013!3d-7.633!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7aa40000000001%3A0x1!2sDs.+Mergawati%2C+Kec.+Kroya%2C+Kab.+Cilacap!5e0!3m2!1sid!2sid!4v1"
-                    width="100%"
-                    height="160"
-                    style="border:0;display:block;"
-                    allowfullscreen=""
-                    loading="lazy">
-                </iframe>
+        <div data-scroll class="reveal-up delay-400 w-full mt-6 flex flex-col items-center">
+            {{-- Peta diapit Ornamen Candi Bentar / Gapura Kiri & Kanan --}}
+            <div class="relative w-full flex items-end justify-center -mx-4 sm:mx-0">
+                {{-- Gapura Kiri --}}
+                <div data-scroll data-scroll-speed="0.2" class="relative shrink-0 select-none pointer-events-none z-10 -mr-[8px]"
+                     style="height: 168px;">
+                    <img src="{{ asset('assets-website/maps/gapura-kiri-gmaps.svg') }}"
+                         class="h-full w-auto object-contain object-bottom drop-shadow-2xs"
+                         alt="Gapura Kiri">
+                </div>
+
+                {{-- Frame Google Maps --}}
+                <div class="relative z-0 flex-1 max-w-[276px] overflow-hidden"
+                     style="height: 168px; border: 1px solid #DFD3BD; background: #e8ece9;">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.3!2d109.013!3d-7.633!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7aa40000000001%3A0x1!2sDs.+Mergawati%2C+Kec.+Kroya%2C+Kab.+Cilacap!5e0!3m2!1sid!2sid!4v1"
+                        width="100%"
+                        height="100%"
+                        style="border:0;display:block;"
+                        allowfullscreen=""
+                        loading="lazy">
+                    </iframe>
+                </div>
+
+                {{-- Gapura Kanan --}}
+                <div data-scroll data-scroll-speed="0.2" class="relative shrink-0 select-none pointer-events-none z-10 -ml-[8px]"
+                     style="height: 168px;">
+                    <img src="{{ asset('assets-website/maps/gapura-kanan-gmaps.svg') }}"
+                         class="h-full w-auto object-contain object-bottom drop-shadow-2xs"
+                         alt="Gapura Kanan">
+                </div>
             </div>
-            <a href="https://maps.google.com/?q=Ds.+Mergawati+Kec.+Kroya+Kab.+Cilacap"
-               target="_blank"
-               class="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-full uppercase tracking-wide hover:opacity-80 transition-opacity"
-               style="border:1px solid #84683A;font-family:'Cinzel',serif;font-size:12px;color:#362B24;letter-spacing:0.05em;">
-                <svg width="10" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-                </svg>
-                BUKA PETUNJUK DI GOOGLE MAPS
-            </a>
+
+            {{-- Tombol Buka Petunjuk di Google Maps Diapit Bunga Kiri & Kanan --}}
+            <div class="relative w-full flex items-center justify-center mt-5 px-2">
+                {{-- Bunga Kiri --}}
+                <div class="shrink-0 select-none pointer-events-none mr-1 sm:mr-2 anim-sway-leaf" style="width: 44px; height: 38px;">
+                    <img src="{{ asset('assets-website/maps/bunga-kiri-gmaps.svg') }}"
+                         class="w-full h-full object-contain"
+                         alt="Bunga Kiri">
+                </div>
+
+                {{-- Link Tombol --}}
+                <a href="https://maps.google.com/?q=Ds.+Mergawati+Kec.+Kroya+Kab.+Cilacap"
+                   target="_blank"
+                   class="inline-flex items-center justify-center gap-1.5 py-1 px-1 uppercase tracking-wider hover:opacity-75 transition-opacity"
+                   style="font-family:'Cinzel',serif;font-size:11.5px;font-weight:600;color:#362B24;letter-spacing:0.07em;white-space:nowrap;">
+                    <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#362B24" stroke-width="1.8">
+                        <path d="M12 2C8.5 2 5.5 5 5.5 8.5c0 5.5 6.5 10.5 6.5 10.5s6.5-5 6.5-10.5C18.5 5 15.5 2 12 2z"/>
+                        <circle cx="12" cy="8.5" r="2.5"/>
+                        <path d="M4 21h16" stroke-linecap="round"/>
+                    </svg>
+                    BUKA PETUNJUK DI GOOGLE MAPS
+                </a>
+
+                {{-- Bunga Kanan --}}
+                <div class="shrink-0 select-none pointer-events-none ml-1 sm:ml-2 anim-sway-leaf" style="width: 48px; height: 38px;">
+                    <img src="{{ asset('assets-website/maps/bunga-kanan-gmaps.svg') }}"
+                         class="w-full h-full object-contain"
+                         alt="Bunga Kanan">
+                </div>
+            </div>
         </div>
     </section>
 
@@ -564,8 +870,15 @@
     {{-- ────────────────────────────────────────────────
          SECTION 5B: GALERI CAROUSEL (DOKUMENTASI CINTA)
          ──────────────────────────────────────────────── --}}
-    <section id="section-galeri" data-scroll-section class="py-12"
+    <section id="section-galeri" data-scroll-section class="pt-5 pb-12"
              style="background:#FAF6EE;border-top:1px solid rgba(223,211,189,0.5);">
+
+        {{-- Ornamen Border Garland Bunga (border-maps.svg) --}}
+        <div data-scroll data-scroll-speed="0.2" class="reveal-down pointer-events-none select-none w-full flex justify-center mb-6 px-3">
+            <img src="{{ asset('assets-website/maps/border-maps.svg') }}"
+                 class="w-full max-w-[368px] h-auto object-contain"
+                 alt="Ornamen Bunga">
+        </div>
 
         <div class="px-6 text-center">
             <p data-scroll class="reveal-up uppercase tracking-widest mb-1.5"
@@ -657,7 +970,7 @@
             </div>
 
             {{-- Thumbnail Strip di Bawah Card --}}
-            <div id="gallery-thumbnails" class="flex gap-2.5 mt-4 overflow-x-auto py-2 px-1 justify-center scrollbar-none">
+            <div id="gallery-thumbnails" data-scroll class="reveal-up delay-300 flex gap-2.5 mt-4 overflow-x-auto py-2 px-1 justify-center scrollbar-none">
                 @foreach($galleryList as $index => $item)
                     <button type="button"
                             data-gallery-thumb="{{ $index }}"
@@ -675,10 +988,24 @@
     {{-- ────────────────────────────────────────────────
          SECTION 6: FORM RSVP (KEHADIRAN TAMU)
          ──────────────────────────────────────────────── --}}
-    <section id="section-rsvp" data-scroll-section class="px-6 py-12"
+    <section id="section-rsvp" data-scroll-section class="relative px-6 pt-10 pb-20 overflow-hidden"
              style="background-color:#FFFCF7;border-top:1px solid rgba(223,211,189,0.5);">
 
-        <div class="text-center max-w-sm mx-auto mb-8">
+        {{-- Ornamen Sudut Kiri Atas RSVP --}}
+        <div data-scroll class="reveal-left delay-100 anim-float-rot absolute top-0 left-0 pointer-events-none select-none z-10"
+             style="width: 115px;">
+            <img src="{{ asset('assets-website/rsvp/corner-kiri-rsvp.svg') }}"
+                 class="w-full h-auto object-contain" alt="ornamen sudut kiri rsvp">
+        </div>
+
+        {{-- Ornamen Sudut Kanan Atas RSVP --}}
+        <div data-scroll class="reveal-right delay-100 anim-float-rot absolute top-0 right-0 pointer-events-none select-none z-10"
+             style="width: 115px;">
+            <img src="{{ asset('assets-website/rsvp/corner-kanan-rsvp.svg') }}"
+                 class="w-full h-auto object-contain" alt="ornamen sudut kanan rsvp">
+        </div>
+
+        <div class="relative z-10 text-center max-w-sm mx-auto mb-8">
             <p data-scroll class="reveal-up uppercase tracking-widest mb-1.5"
                style="font-family:'Cinzel',serif;font-size:11px;color:#8B6C3F;letter-spacing:0.25em;">
                 KEHADIRAN TAMU
@@ -693,7 +1020,7 @@
             </p>
         </div>
 
-        <form id="rsvp-form" data-scroll class="reveal-up delay-200 flex flex-col gap-5 max-w-sm mx-auto" novalidate>
+        <form id="rsvp-form" data-scroll class="reveal-up delay-200 relative z-10 flex flex-col gap-5 max-w-sm mx-auto" novalidate>
             @csrf
             @if(isset($guest) && $guest)
                 <input type="hidden" name="guest_id" value="{{ $guest->id }}">
@@ -790,16 +1117,52 @@
             </button>
         </form>
 
-        <div id="rsvp-message" class="mt-5 max-w-sm mx-auto" style="display:none;"></div>
+        <div id="rsvp-message" class="relative z-10 mt-5 max-w-sm mx-auto" style="display:none;"></div>
+
+        {{-- Pembatas Garis Bawah Halus --}}
+        <div class="absolute bottom-0 left-0 right-0 h-[1px] pointer-events-none" style="background-color: rgba(223,211,189,0.5);"></div>
+
+        {{-- Ornamen Delman Bawah RSVP --}}
+        <div id="delman-rsvp-wrapper"
+             data-scroll
+             class="reveal-fade delay-200 absolute bottom-0 left-0 right-0 pointer-events-none select-none z-10"
+             style="line-height: 0;">
+            <div id="delman-rsvp-container"
+                 style="width: 125px; will-change: transform; transition: transform 0.05s linear;">
+                <img id="delman-rsvp"
+                     src="{{ asset('assets-website/rsvp/batas-delman-bawah.svg') }}"
+                     class="w-full h-auto object-contain block"
+                     alt="ornamen delman rsvp">
+            </div>
+        </div>
     </section>
 
     {{-- ────────────────────────────────────────────────
          SECTION 7: BUKU TAMU (UNTAIAN DOA RESTU)
          ──────────────────────────────────────────────── --}}
-    <section id="section-bukutamu" data-scroll-section class="px-6 py-12"
-             style="background-color:#FFFCF7;border-top:1px solid rgba(223,211,189,0.5);">
+    <section id="section-bukutamu" data-scroll-section class="relative px-6 py-12 overflow-hidden"
+             style="background-color:#FAF6EE;border-top:1px solid rgba(223,211,189,0.5);">
 
-        <div class="text-center max-w-sm mx-auto mb-8">
+        {{-- Ornamen Pohon Kanan Atas (Melayang dengan Parallax) --}}
+        <div data-scroll data-scroll-speed="0.25" class="reveal-right delay-200 anim-sway-leaf absolute top-0 right-0 pointer-events-none select-none z-0"
+             style="width: 145px; transform-origin: top right;">
+            <img src="{{ asset('assets-website/buku-tamu/pohon-kanan.svg') }}"
+                 class="w-full h-auto object-contain select-none"
+                 alt="Ornamen Pohon Kanan">
+        </div>
+
+        {{-- Ornamen Daun Kiri Bawah --}}
+        <div data-scroll class="reveal-left delay-200 anim-sway-leaf absolute bottom-0 left-0 pointer-events-none select-none z-0"
+             style="width: 52px; height: 220px; transform-origin: bottom left;">
+            <img src="{{ asset('assets-website/buku-tamu/daun-kiri-bawah atas.svg') }}"
+                 class="absolute bottom-0 left-0 w-[51px] h-auto object-contain select-none"
+                 alt="Ornamen Daun Kiri Bawah Atas">
+            <img src="{{ asset('assets-website/buku-tamu/dain-kiri-bawah-bawah.svg') }}"
+                 class="absolute bottom-0 left-0 w-[47px] h-auto object-contain select-none"
+                 alt="Ornamen Daun Kiri Bawah Bawah">
+        </div>
+
+        <div class="relative z-10 text-center max-w-sm mx-auto mb-8">
             <p data-scroll class="reveal-up uppercase tracking-widest mb-1.5"
                style="font-family:'Cinzel',serif;font-size:11px;color:#8B6C3F;letter-spacing:0.25em;">
                 UNTAIAN DOA RESTU
@@ -810,8 +1173,8 @@
             </h2>
         </div>
 
-        <div data-scroll class="reveal-up delay-200 wishes-feed max-w-sm mx-auto flex flex-col gap-3.5" id="wishes-feed">
-            <p class="text-center text-sm py-6 italic" style="color:rgba(107,77,56,0.5);">
+        <div data-scroll class="reveal-up delay-200 wishes-feed max-w-sm mx-auto flex flex-col gap-3 relative z-10" id="wishes-feed">
+            <p class="text-center text-sm py-6 italic" style="font-family:'Playfair Display',serif;color:rgba(107,77,56,0.6);">
                 Memuat ucapan...
             </p>
         </div>
@@ -820,10 +1183,46 @@
     {{-- ────────────────────────────────────────────────
          SECTION 8: AMPLOP DIGITAL (TANDA KASIH)
          ──────────────────────────────────────────────── --}}
-    <section id="section-amplop" data-scroll-section class="px-6 py-12"
+    <section id="section-amplop" data-scroll-section class="relative overflow-hidden px-6 py-12"
              style="background:#FAF6EE;border-top:1px solid rgba(223,211,189,0.5);">
 
-        <div class="text-center max-w-sm mx-auto mb-8">
+        {{-- ── Ornamen Sisi Amplop Digital (Melayang & Parallax) ── --}}
+        {{-- Bunga Atas Kiri --}}
+        <div data-scroll data-scroll-speed="0.3" class="reveal-left delay-100 anim-float-rot absolute top-0 left-0 pointer-events-none select-none z-20"
+             style="width: 85px;">
+            <img src="{{ asset('assets-website/amplop-digital/bunga-atas-kiri.svg') }}"
+                 alt="" class="w-full h-auto object-contain">
+        </div>
+
+        {{-- Daun Atas Kanan --}}
+        <div data-scroll data-scroll-speed="-0.2" class="reveal-right delay-100 anim-sway-leaf absolute top-0 right-0 pointer-events-none select-none z-20"
+             style="width: 85px;">
+            <img src="{{ asset('assets-website/amplop-digital/daun-atas-kanan.svg') }}"
+                 alt="" class="w-full h-auto object-contain">
+        </div>
+
+        {{-- Bunga Kiri Bawah (Atas) --}}
+        <div data-scroll data-scroll-speed="0.25" class="reveal-left delay-200 anim-float-gentle absolute bottom-[115px] left-0 pointer-events-none select-none z-20"
+             style="width: 78px;">
+            <img src="{{ asset('assets-website/amplop-digital/bunga-kiri-bawah-atas.svg') }}"
+                 alt="" class="w-full h-auto object-contain">
+        </div>
+
+        {{-- Bunga Kiri Bawah (Bawah) --}}
+        <div data-scroll data-scroll-speed="0.35" class="reveal-left delay-300 anim-sway-leaf absolute bottom-0 left-0 pointer-events-none select-none z-20"
+             style="width: 70px;">
+            <img src="{{ asset('assets-website/amplop-digital/bunga-kiri-bawah-bawah.svg') }}"
+                 alt="" class="w-full h-auto object-contain">
+        </div>
+
+        {{-- Daun Bawah Kanan --}}
+        <div data-scroll data-scroll-speed="0.35" class="reveal-right delay-300 anim-sway-leaf absolute bottom-0 right-0 pointer-events-none select-none z-20"
+             style="width: 65px;">
+            <img src="{{ asset('assets-website/amplop-digital/daun-bawah-kanan.svg') }}"
+                 alt="" class="w-full h-auto object-contain">
+        </div>
+
+        <div class="relative z-10 text-center max-w-sm mx-auto mb-8">
             <p data-scroll class="reveal-up uppercase tracking-widest mb-1.5"
                style="font-family:'Cinzel',serif;font-size:11px;color:#8B6C3F;letter-spacing:0.25em;">
                 TANDA KASIH
@@ -838,9 +1237,14 @@
             </p>
         </div>
 
-        <div class="max-w-sm mx-auto flex flex-col gap-4">
+        <div class="relative z-10 max-w-sm mx-auto flex flex-col gap-4">
             {{-- Rekening 1: Ridho --}}
-            <div data-scroll class="reveal-up delay-200 bg-[#F9F5EE] border border-[#D5C2A5] rounded-2xl p-5 shadow-xs">
+            <div data-scroll class="relative reveal-up delay-200 bg-[#F9F5EE] border border-[#D5C2A5] rounded-2xl p-5 shadow-xs">
+                {{-- Corner Atas Kiri --}}
+                <img src="{{ asset('assets-website/amplop-digital/corner-atas-kiri.svg') }}"
+                     alt=""
+                     class="absolute -top-2.5 -left-2.5 w-[65px] sm:w-[74px] pointer-events-none z-20 select-none">
+
                 <div class="flex items-center justify-between mb-3.5">
                     <p class="font-bold text-xs uppercase tracking-wider text-[#7A5B28]"
                        style="font-family:'Cinzel',serif;letter-spacing:0.1em;">
@@ -880,7 +1284,12 @@
             </div>
 
             {{-- Rekening 2: Sulastri --}}
-            <div data-scroll class="reveal-up delay-300 bg-[#F9F5EE] border border-[#D5C2A5] rounded-2xl p-5 shadow-xs">
+            <div data-scroll class="relative reveal-up delay-300 bg-[#F9F5EE] border border-[#D5C2A5] rounded-2xl p-5 shadow-xs">
+                {{-- Corner Bawah Kanan --}}
+                <img src="{{ asset('assets-website/amplop-digital/corner-bawah-kanan.svg') }}"
+                     alt=""
+                     class="absolute -bottom-2.5 -right-2.5 w-[65px] sm:w-[74px] pointer-events-none z-20 select-none">
+
                 <div class="flex items-center justify-between mb-3.5">
                     <p class="font-bold text-xs uppercase tracking-wider text-[#7A5B28]"
                        style="font-family:'Cinzel',serif;letter-spacing:0.1em;">
@@ -957,22 +1366,36 @@
     {{-- ────────────────────────────────────────────────
          SECTION 9: TURUT MENGUNDANG & PENUTUP
          ──────────────────────────────────────────────── --}}
-    <section id="section-penutup" data-scroll-section class="px-6 py-16 flex flex-col items-center text-center"
-             style="background:rgba(243,236,224,0.5);border-top:1px solid #DFD3BD;">
+    <section id="section-penutup" data-scroll-section class="relative overflow-hidden px-6 pt-12 pb-16 flex flex-col items-center text-center"
+             style="background:#FAF6EE;border-top:1px solid #DFD3BD;">
 
-        {{-- Ornamen atas --}}
-        <div class="pointer-events-none overflow-hidden mb-6 w-full" style="height:50px;" data-scroll data-scroll-speed="-1">
-            <img src="https://www.figma.com/img/{{ '17574254db87dd33f07e2310e520ff806a71cb39' }}"
-                 onerror="this.style.display='none'"
-                 class="w-full h-full object-cover opacity-70" alt="">
+        {{-- Ornamen Daun Kanan Atas (Melayang & Parallax) --}}
+        <div data-scroll data-scroll-speed="-0.3" class="reveal-right delay-100 anim-sway-leaf absolute top-0 right-0 pointer-events-none select-none z-10"
+             style="width: 115px;">
+            <img src="{{ asset('assets-website/penutup/daun-kanan-atas.svg') }}"
+                 alt="" class="w-full h-auto object-contain">
         </div>
 
-        <p data-scroll class="reveal-up uppercase tracking-widest mb-3"
+        {{-- Ornamen Bunga Kiri (Melayang & Parallax) --}}
+        <div data-scroll data-scroll-speed="0.3" class="reveal-left delay-200 anim-float-rot absolute top-[160px] sm:top-[180px] left-0 pointer-events-none select-none z-10"
+             style="width: 95px;">
+            <img src="{{ asset('assets-website/penutup/bunga-kiri-bawah.svg') }}"
+                 alt="" class="w-full h-auto object-contain">
+        </div>
+
+        {{-- Ilustrasi Pengantin Tengah --}}
+        <div data-scroll class="reveal-up relative z-10 mb-6 max-w-[200px] sm:max-w-[225px] mx-auto">
+            <img src="{{ asset('assets-website/penutup/pengantin-tengah.svg') }}"
+                 alt="Ilustrasi Pengantin"
+                 class="w-full h-auto object-contain select-none pointer-events-none">
+        </div>
+
+        <p data-scroll class="reveal-up uppercase tracking-widest mb-3 relative z-10"
            style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.25em;">
             TURUT MENGUNDANG :
         </p>
 
-        <div data-scroll class="reveal-up delay-100 mb-8 leading-relaxed text-center"
+        <div data-scroll class="reveal-up delay-100 mb-8 leading-relaxed text-center relative z-10"
            style="font-family:'Playfair Display',serif;font-size:15px;color:#3A2517;line-height:1.75;">
             @if(isset($guest) && $guest && $guest->custom_turut_mengundang)
                 {!! nl2br(e($guest->custom_turut_mengundang)) !!}
@@ -985,95 +1408,54 @@
             @endif
         </div>
 
-        <div data-scroll class="reveal-scale gold-divider mb-8" style="width:140px;"></div>
+        <div data-scroll class="reveal-scale gold-divider mb-8 relative z-10" style="width:140px;"></div>
 
-        <p data-scroll class="reveal-fade delay-200 italic mb-5 leading-relaxed text-center"
+        <p data-scroll class="reveal-fade delay-200 italic mb-5 leading-relaxed text-center relative z-10"
            style="font-family:'Playfair Display',serif;font-size:14px;color:#6E5B4F;line-height:1.6;">
             Merupakan suatu kehormatan dan kebahagiaan bagi kami<br>
             apabila Bapak/Ibu/Saudara/i berkenan hadir<br>
             untuk memberikan do'a restu.
         </p>
 
-        <p data-scroll class="reveal-up delay-250 italic font-bold mb-8 text-center"
+        <p data-scroll class="reveal-up delay-250 italic font-bold mb-8 text-center relative z-10"
            style="font-family:'Playfair Display',serif;font-size:15px;color:#3A2517;">
             Wassalamu'alaikum Warahmatullahi Wabarakatuh
         </p>
 
-        <p data-scroll class="reveal-up delay-300 uppercase tracking-widest mb-2"
+        <p data-scroll class="reveal-up delay-300 uppercase tracking-widest mb-2 relative z-10"
            style="font-family:'Cinzel',serif;font-size:10px;color:#84683A;letter-spacing:0.25em;">
             KAMI YANG BERBAHAGIA:
         </p>
 
-        <p data-scroll class="reveal-up delay-350 font-bold uppercase tracking-wider mb-6 leading-relaxed"
+        <p data-scroll class="reveal-up delay-350 font-bold uppercase tracking-wider mb-6 leading-relaxed relative z-10"
            style="font-family:'Cinzel',serif;font-size:11px;color:#3A2517;letter-spacing:0.04em;line-height:1.6;">
             KELUARGA BPK. YASMUDIN &amp; IBU RASIWEN<br>
             KELUARGA BPK. WAHYU DARMA PUTRA (ALM) &amp; IBU YENI HANDAYANI
         </p>
 
-        <h2 data-scroll class="reveal-up delay-400 mb-1"
+        <h2 data-scroll class="reveal-up delay-400 mb-1 relative z-10"
             style="font-family:'Great Vibes',cursive;font-size:54px;color:#3A2517;">
             Astri &amp; Ridho
         </h2>
 
-        <p data-scroll class="reveal-up delay-450 uppercase tracking-widest"
+        <p data-scroll class="reveal-up delay-450 uppercase tracking-widest relative z-10"
            style="font-family:'Cinzel',serif;font-size:10px;color:#84683A;letter-spacing:0.2em;">
             23 OKTOBER 2026
         </p>
 
-        <div data-scroll class="reveal-scale gold-divider mt-6 mb-4" style="width:128px;"></div>
+        <div data-scroll class="reveal-scale gold-divider mt-6 mb-4 relative z-10" style="width:128px;"></div>
 
-        <p data-scroll class="reveal-fade delay-200 text-xs"
+        <p data-scroll class="reveal-fade delay-200 text-xs relative z-10"
            style="font-family:'Plus Jakarta Sans',sans-serif;color:rgba(107,77,56,0.5);">
-            Made with ❤️ for Astri &amp; Ridho
+            Made by akrdesign for Astri &amp; Ridho
         </p>
-
-        {{-- Ornamen bawah --}}
-        <div class="pointer-events-none overflow-hidden mt-8 w-full" style="height:60px;">
-            <img src="https://www.figma.com/img/{{ '17574254db87dd33f07e2310e520ff806a71cb39' }}"
-                 onerror="this.style.display='none'"
-                 class="w-full h-full object-cover opacity-70" alt="">
-        </div>
     </section>
 
-    {{-- ────────────────────────────────────────────────
-         BOTTOM NAVIGATION
-         ──────────────────────────────────────────────── --}}
-    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 z-40 flex items-center justify-around"
-         style="width:100%;max-width:412px;background:rgba(250,245,236,0.95);border-top:1px solid rgba(223,211,189,0.7);backdrop-filter:blur(12px);padding:8px 0;">
 
-        <a data-scroll-to-target="#section-mempelai" class="bottom-nav-item" href="#section-mempelai">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-            </svg>
-            Mempelai
-        </a>
-        <a data-scroll-to-target="#section-acara" class="bottom-nav-item" href="#section-acara">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            Acara
-        </a>
-        <a data-scroll-to-target="#section-rsvp" class="bottom-nav-item" href="#section-rsvp">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            RSVP
-        </a>
-        <a data-scroll-to-target="#section-amplop" class="bottom-nav-item" href="#section-amplop">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><polyline points="1,4 12,13 23,4"/>
-            </svg>
-            Amplop
-        </a>
-    </nav>
 
-    {{-- Spacer for bottom nav --}}
-    <div style="height:64px;"></div>
 
 </div><!-- /data-scroll-container -->
 
-{{-- Toast copy --}}
-<div id="copy-toast">Nomor rekening tersalin!</div>
 
 </body>
 </html>
