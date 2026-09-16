@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 smoothWheel: true,
                 syncTouch: false, // native touch on smartphone to avoid touch lag
             },
-            triggerRootMargin: '-8% 0px -8% 0px',
+            triggerRootMargin: '-15% 0px -15% 0px',
             rafRootMargin: '100% 100% 100% 100%',
             autoStart: false,
         });
@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update on resize using v5 method
         window.addEventListener('resize', () => {
             if (locoScroll) locoScroll.resize();
+            checkSectionMempelaiReveal();
         });
     }
 
@@ -68,6 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
         coverOverlay.addEventListener('touchmove', preventGhostScroll, { passive: false });
     }
 
+    if (!coverOverlay) {
+        document.body.classList.add('invitation-opened');
+    }
+
     bukaBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const guestId = document.body.dataset.guestId;
@@ -83,12 +88,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (coverOverlay) {
                 coverOverlay.classList.add('hidden-overlay');
-                document.body.classList.remove('overflow-hidden');
 
                 if (locoScroll) {
                     locoScroll.start();
-                    locoScroll.resize();
                 }
+
+                // Aktifkan animasi masuk Section 2 saat cover bergeser naik membuka layar
+                setTimeout(() => {
+                    document.body.classList.remove('overflow-hidden');
+                    document.body.classList.add('invitation-opened');
+                    if (locoScroll) {
+                        locoScroll.resize();
+                    }
+                    checkSectionMempelaiReveal();
+                }, 350);
 
                 setTimeout(() => {
                     coverOverlay.style.display = 'none';
@@ -96,9 +109,46 @@ document.addEventListener('DOMContentLoaded', () => {
                         locoScroll.resize();
                     }
                 }, 1100);
+            } else {
+                document.body.classList.remove('overflow-hidden');
+                document.body.classList.add('invitation-opened');
+                if (locoScroll) {
+                    locoScroll.start();
+                    locoScroll.resize();
+                }
+                checkSectionMempelaiReveal();
             }
         });
     });
+
+    // ── Section Mempelai 50% Scroll Gate ─────────────────
+    const sectionMempelai = document.getElementById('section-mempelai');
+
+    function checkSectionMempelaiReveal() {
+        if (!sectionMempelai || sectionMempelai.classList.contains('section-revealed')) return;
+
+        const rect = sectionMempelai.getBoundingClientRect();
+        const windowH = window.innerHeight;
+        const currentScroll = window.scrollY || (locoScroll && locoScroll.lenisInstance ? locoScroll.lenisInstance.scroll : 0);
+
+        // Section 3 (Pasangan Mempelai) tetap opacity 0 sampai user scroll 50% ke arahnya:
+        // - currentScroll mencapai 45%-50% dari offsetTop section
+        // - ATAU sisi atas section sudah masuk ke 50% viewport saat scroll aktif (> 40px)
+        const offsetThreshold = sectionMempelai.offsetTop * 0.45;
+        const viewportThreshold = windowH * 0.5;
+
+        if (currentScroll >= offsetThreshold || (rect.top <= viewportThreshold && currentScroll > 40)) {
+            sectionMempelai.classList.add('section-revealed');
+            if (locoScroll) {
+                locoScroll.resize();
+            }
+        }
+    }
+
+    if (locoScroll && locoScroll.lenisInstance) {
+        locoScroll.lenisInstance.on('scroll', checkSectionMempelaiReveal);
+    }
+    window.addEventListener('scroll', checkSectionMempelaiReveal, { passive: true });
 
     // ── Countdown Timer ───────────────────────────────────
     const cdContainer = document.querySelector('[data-countdown-container]');

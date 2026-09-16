@@ -258,6 +258,130 @@ body.overflow-hidden #main-content {
     filter: brightness(0.97);
 }
 
+/* ── Gating Entrance Animasi Saat Cover Masih Tertutup ── */
+body:not(.invitation-opened) #main-content [data-scroll] {
+    opacity: 0 !important;
+    transition: none !important;
+}
+
+body:not(.invitation-opened) #main-content .reveal-down {
+    transform: translateY(-32px) !important;
+}
+
+body:not(.invitation-opened) #main-content .reveal-up {
+    transform: translateY(36px) !important;
+}
+
+body:not(.invitation-opened) #main-content .reveal-left {
+    transform: translateX(-32px) !important;
+}
+
+body:not(.invitation-opened) #main-content .reveal-right {
+    transform: translateX(32px) !important;
+}
+
+body:not(.invitation-opened) #main-content .reveal-scale {
+    transform: scaleX(0) !important;
+}
+
+body:not(.invitation-opened) #main-content .reveal-scale-in {
+    transform: scale(0.85) !important;
+}
+
+/* ── Section Ayat Suci: Ornamen Slow & Staggered Reveal ── */
+.ornament-border-slow {
+    transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transition-delay: 0.1s !important;
+}
+
+.ornament-leaf-left {
+    transition: opacity 1.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transition-delay: 0.85s !important;
+}
+
+.ornament-leaf-right {
+    transition: opacity 1.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transition-delay: 1.65s !important;
+}
+
+/* ── Section Mempelai: Scroll Gate 50% ────────────────── */
+#section-mempelai:not(.section-revealed) [data-scroll],
+#section-mempelai:not(.section-revealed) .reveal-up,
+#section-mempelai:not(.section-revealed) .reveal-left,
+#section-mempelai:not(.section-revealed) .reveal-right,
+#section-mempelai:not(.section-revealed) .reveal-scale-in,
+#section-mempelai:not(.section-revealed) .reveal-scale {
+    opacity: 0 !important;
+    pointer-events: none;
+    transition: none !important;
+}
+
+#section-mempelai:not(.section-revealed) .reveal-up {
+    transform: translateY(36px) !important;
+}
+
+#section-mempelai:not(.section-revealed) .reveal-left {
+    transform: translateX(-36px) !important;
+}
+
+#section-mempelai:not(.section-revealed) .reveal-right {
+    transform: translateX(36px) !important;
+}
+
+#section-mempelai:not(.section-revealed) .reveal-scale-in {
+    transform: scale(0.85) !important;
+}
+
+#section-mempelai.section-revealed [data-scroll]:not([data-scroll-speed]) {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+}
+
+#section-mempelai.section-revealed [data-scroll][data-scroll-speed] {
+    opacity: 1;
+    transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Section Mempelai: Staggered 1 per 1, Slow & Relaxed ── */
+.mempelai-tag {
+    transition: opacity 1.3s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 1.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transition-delay: 0.1s !important;
+}
+
+.mempelai-title {
+    transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 1.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transition-delay: 0.5s !important;
+}
+
+.mempelai-desc {
+    transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 1.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transition-delay: 0.95s !important;
+}
+
+.mempelai-wanita {
+    transition: opacity 1.6s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 1.6s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transition-delay: 1.55s !important;
+}
+
+.mempelai-ampersand {
+    transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 1.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transition-delay: 2.35s !important;
+}
+
+.mempelai-pria {
+    transition: opacity 1.6s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 1.6s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transition-delay: 3.05s !important;
+}
+
 /* ── Countdown Boxes ──────────────────────────────────── */
 .countdown-box {
     background: rgba(247, 243, 235, 0.45);

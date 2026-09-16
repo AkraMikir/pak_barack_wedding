@@ -562,20 +562,22 @@
              style="background-color:#FFFCF7;">
 
         {{-- Ornamen Atas (Header Motif Doa) --}}
-        <div data-scroll class="reveal-down anim-float-gentle relative z-10 w-full flex justify-center mb-3 sm:mb-4 px-4">
-            <img src="{{ asset('assets-website/ayat-suci/border-doa.svg') }}"
-                 class="w-full max-w-[310px] sm:max-w-[330px] h-auto object-contain pointer-events-none select-none"
-                 alt="Ornamen Ayat Suci">
+        <div data-scroll class="reveal-down ornament-border-slow relative z-10 w-full flex justify-center mb-3 sm:mb-4 px-4">
+            <div class="anim-float-gentle w-full flex justify-center">
+                <img src="{{ asset('assets-website/ayat-suci/border-doa.svg') }}"
+                     class="w-full max-w-[310px] sm:max-w-[330px] h-auto object-contain pointer-events-none select-none"
+                     alt="Ornamen Ayat Suci">
+            </div>
         </div>
 
         {{-- Teks "Maha Suci Allah" --}}
-        <p data-scroll class="reveal-up delay-100 relative z-10 mb-3"
+        <p data-scroll class="reveal-up delay-200 relative z-10 mb-3"
            style="font-family:'Alex Brush',cursive;font-size:30px;color:#84683A;line-height:1.2;">
             Maha Suci Allah
         </p>
 
         {{-- Ayat Al-Qur'an --}}
-        <div data-scroll class="reveal-up delay-200 relative z-10 px-5 max-w-[360px] mb-2">
+        <div data-scroll class="reveal-up delay-400 relative z-10 px-5 max-w-[360px] mb-2">
             <p class="text-center font-bold"
                style="font-family:'Playfair Display',serif;font-size:14px;color:#3A2517;line-height:1.75;">
                 &ldquo;Dan di antara tanda-tanda kekuasaan-Nya<br>
@@ -590,16 +592,18 @@
 
         {{-- Area Bawah: Ornamen Daun Kiri & Kanan Flanking QS. AR-RUM : 21 --}}
         <div class="relative w-full flex flex-col items-center justify-center pt-3 pb-6 min-h-[110px] overflow-hidden">
-            {{-- Ornamen Daun Kiri --}}
-            <div data-scroll data-scroll-speed="0.35" class="reveal-left delay-200 anim-sway-leaf absolute left-0 bottom-0 pointer-events-none z-0"
-                 style="width: 125px; transform-origin: bottom left;">
-                <img src="{{ asset('assets-website/ayat-suci/daun-kiri-doa.svg') }}"
-                     class="w-full h-auto object-contain select-none"
-                     alt="Ornamen Daun Kiri">
+            {{-- Ornamen Daun Kiri (Tampil Lebih Lambat Lebih Awal) --}}
+            <div data-scroll class="reveal-left ornament-leaf-left absolute left-0 bottom-0 pointer-events-none z-0"
+                 style="width: 125px;">
+                <div class="anim-sway-leaf" style="transform-origin: bottom left;">
+                    <img src="{{ asset('assets-website/ayat-suci/daun-kiri-doa.svg') }}"
+                         class="w-full h-auto object-contain select-none"
+                         alt="Ornamen Daun Kiri">
+                </div>
             </div>
 
             {{-- Teks Surat & Pembatas Garis Emas --}}
-            <div data-scroll class="reveal-up delay-300 relative z-10 flex flex-col items-center px-4">
+            <div data-scroll class="reveal-up delay-500 relative z-10 flex flex-col items-center px-4">
                 <p class="uppercase tracking-widest font-bold"
                    style="font-family:'Cinzel',serif;font-size:12px;color:#84683A;letter-spacing:0.2em;">
                     — QS. AR-RUM : 21 —
@@ -607,12 +611,14 @@
                 <div class="gold-divider w-28 sm:w-32 mt-2" style="opacity: 0.85;"></div>
             </div>
 
-            {{-- Ornamen Daun Kanan --}}
-            <div data-scroll data-scroll-speed="0.35" class="reveal-right delay-200 anim-sway-leaf absolute right-0 bottom-0 pointer-events-none z-0"
-                 style="width: 125px; transform-origin: bottom right;">
-                <img src="{{ asset('assets-website/ayat-suci/daun-kanan-doa.svg') }}"
-                     class="w-full h-auto object-contain select-none"
-                     alt="Ornamen Daun Kanan">
+            {{-- Ornamen Daun Kanan (Tampil Bergantian Setelah Daun Kiri) --}}
+            <div data-scroll class="reveal-right ornament-leaf-right absolute right-0 bottom-0 pointer-events-none z-0"
+                 style="width: 125px;">
+                <div class="anim-sway-leaf" style="transform-origin: bottom right;">
+                    <img src="{{ asset('assets-website/ayat-suci/daun-kanan-doa.svg') }}"
+                         class="w-full h-auto object-contain select-none"
+                         alt="Ornamen Daun Kanan">
+                </div>
             </div>
         </div>
     </section>
@@ -632,15 +638,15 @@
 
         {{-- Header --}}
         <div class="relative z-10 mb-8">
-            <p data-scroll class="reveal-up uppercase tracking-widest mb-1"
+            <p data-scroll class="reveal-up mempelai-tag uppercase tracking-widest mb-1"
                style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.25em;">
                 PASANGAN MEMPELAI
             </p>
-            <h2 data-scroll class="reveal-up delay-100 font-bold"
+            <h2 data-scroll class="reveal-up mempelai-title font-bold"
                style="font-family:'Playfair Display',serif;font-size:24px;color:#362B24;line-height:32px;">
                 Dua Jiwa Satu Ikatan
             </h2>
-            <p data-scroll class="reveal-up delay-200 mt-1 text-sm leading-relaxed"
+            <p data-scroll class="reveal-up mempelai-desc mt-1 text-sm leading-relaxed"
                style="font-family:'Plus Jakarta Sans',sans-serif;color:#6E5B4F;">
                 Dengan memohon rahmat &amp; ridho Allah SWT, kami<br>
                 bermaksud melangsungkan syukuran pernikahan putra-<br>
@@ -652,7 +658,7 @@
         <div class="relative z-10 flex items-start justify-center gap-3 w-full">
 
             {{-- Mempelai Wanita --}}
-            <div data-scroll class="reveal-left delay-100 flex flex-col items-center flex-1 max-w-[155px]">
+            <div data-scroll class="reveal-left mempelai-wanita flex flex-col items-center flex-1 max-w-[155px]">
                 <div class="relative w-full">
                     {{-- Ornamen Payung Kiri (Melayang dengan Parallax) --}}
                     <div data-scroll data-scroll-speed="0.5" class="absolute -top-6 -left-5 z-20 pointer-events-none select-none anim-float-rot"
@@ -678,14 +684,14 @@
             </div>
 
             {{-- Ampersand tengah --}}
-            <div data-scroll class="reveal-scale-in delay-200 flex flex-col items-center justify-center flex-shrink-0 pt-10" style="width:36px;">
-                <div data-scroll class="reveal-scale gold-divider-v" style="height:70px;margin-bottom:8px;"></div>
+            <div data-scroll class="reveal-scale-in mempelai-ampersand flex flex-col items-center justify-center flex-shrink-0 pt-10" style="width:36px;">
+                <div class="gold-divider-v" style="height:70px;margin-bottom:8px;"></div>
                 <p style="font-family:'Great Vibes',cursive;font-size:42px;color:#84683A;line-height:1;">&amp;</p>
-                <div data-scroll class="reveal-scale delay-200 gold-divider-v" style="height:70px;margin-top:8px;"></div>
+                <div class="gold-divider-v" style="height:70px;margin-top:8px;"></div>
             </div>
 
             {{-- Mempelai Pria --}}
-            <div data-scroll class="reveal-right delay-100 flex flex-col items-center flex-1 max-w-[155px]">
+            <div data-scroll class="reveal-right mempelai-pria flex flex-col items-center flex-1 max-w-[155px]">
                 <div class="relative w-full">
                     {{-- Ornamen Keris Kanan (Melayang dengan Parallax) --}}
                     <div data-scroll data-scroll-speed="0.5" class="absolute -top-7 -right-4 z-20 pointer-events-none select-none anim-float-gentle"
