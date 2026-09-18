@@ -29,7 +29,7 @@ class AuthController extends Controller
             $seconds = RateLimiter::availableIn($key);
 
             return back()->withErrors([
-                'password' => "Terlalu banyak percobaan login yang gagal. Akun dikunci selama {$seconds} detik.",
+                'password' => "Terlalu banyak percobaan login yang gagal. Tidak dapat login selama {$seconds} detik.",
             ])->withInput();
         }
 
@@ -57,9 +57,14 @@ class AuthController extends Controller
         RateLimiter::hit($key, 60);
 
         $remaining = RateLimiter::remaining($key, 5);
-        $errorMsg = $remaining > 0
-            ? "Password admin tidak valid. Sisa percobaan: {$remaining} kali."
-            : 'Terlalu banyak percobaan login yang gagal. Akun dikunci selama 60 detik.';
+
+        if ($remaining === 0) {
+            $errorMsg = 'Terlalu banyak percobaan login yang gagal. Tidak dapat login selama 60 detik.';
+        } elseif ($remaining === 1) {
+            $errorMsg = 'Password admin tidak valid. Peringatan: Sisa 1 kali percobaan lagi sebelum tidak dapat login.';
+        } else {
+            $errorMsg = 'Password admin tidak valid.';
+        }
 
         return back()->withErrors(['password' => $errorMsg])->withInput();
     }

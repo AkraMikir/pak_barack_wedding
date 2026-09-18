@@ -60,7 +60,7 @@ class GuestManagementTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('password');
-        $this->assertStringContainsString('dikunci selama', session('errors')->first('password'));
+        $this->assertStringContainsString('Tidak dapat login selama', session('errors')->first('password'));
     }
 
     public function test_admin_can_logout(): void
