@@ -14,6 +14,63 @@ class GuestManagementTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->withSession(['admin_authenticated' => true]);
+    }
+
+    public function test_unauthenticated_user_redirected_to_secret_login_page(): void
+    {
+        $response = $this->flushSession()->get('/admin/guests');
+
+        $response->assertRedirect('/admin/sulastri-ridho/wedding/login');
+    }
+
+    public function test_admin_can_login_with_correct_password(): void
+    {
+        $response = $this->flushSession()->post('/admin/sulastri-ridho/wedding/login', [
+            'password' => 'bangbaraklavana333wedding',
+        ]);
+
+        $response->assertRedirect('/admin/guests');
+        $this->assertTrue(session('admin_authenticated'));
+    }
+
+    public function test_admin_cannot_login_with_incorrect_password(): void
+    {
+        $response = $this->flushSession()->post('/admin/sulastri-ridho/wedding/login', [
+            'password' => 'wrong-password',
+        ]);
+
+        $response->assertSessionHasErrors('password');
+        $this->assertFalse(session('admin_authenticated', false));
+    }
+
+    public function test_admin_login_locked_out_after_5_failed_attempts(): void
+    {
+        for ($i = 0; $i < 5; $i++) {
+            $this->flushSession()->post('/admin/sulastri-ridho/wedding/login', [
+                'password' => 'invalid-password',
+            ]);
+        }
+
+        $response = $this->flushSession()->post('/admin/sulastri-ridho/wedding/login', [
+            'password' => 'invalid-password',
+        ]);
+
+        $response->assertSessionHasErrors('password');
+        $this->assertStringContainsString('Tidak dapat login selama', session('errors')->first('password'));
+    }
+
+    public function test_admin_can_logout(): void
+    {
+        $response = $this->post('/admin/logout');
+
+        $response->assertRedirect('/admin/sulastri-ridho/wedding/login');
+        $this->assertFalse(session('admin_authenticated', false));
+    }
+
     public function test_admin_can_view_guests_page(): void
     {
         $response = $this->get('/admin/guests');

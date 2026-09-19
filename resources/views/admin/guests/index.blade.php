@@ -5,10 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin RSVP & Manajemen Tamu Undangan</title>
     @vite(['resources/css/app.css'])
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
             background-color: #F8FAF7;
+        }
+        .crop-container {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            overflow: hidden;
+            background-color: #1c1917;
+            position: relative;
+            border-radius: 0.75rem;
+        }
+        .crop-container img {
+            max-width: 100%;
+            max-height: 100%;
         }
     </style>
 </head>
@@ -32,6 +47,18 @@
                 </svg>
                 Lihat Web Undangan
             </a>
+            <form action="{{ route('admin.logout') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit"
+                        class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors border border-rose-200 cursor-pointer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </button>
+            </form>
         </div>
     </div>
 
@@ -162,49 +189,61 @@
             @csrf
 
             {{-- Mempelai Wanita --}}
-            <div class="p-4 rounded-xl border border-stone-200 bg-stone-50/50 flex items-center gap-4">
-                <div class="w-16 h-24 border border-stone-300 overflow-hidden bg-stone-200 flex-shrink-0 flex items-center justify-center shadow-2xs"
-                     style="border-top-left-radius: 2rem; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
-                    @if(!empty($fotoWanita))
-                        <img src="{{ asset('storage/' . $fotoWanita) }}" class="w-full h-full object-cover" alt="Wanita">
-                    @else
-                        <span class="text-[10px] text-stone-400 text-center font-bold">Wanita</span>
-                    @endif
+            <div class="p-4 rounded-xl border border-stone-200 bg-stone-50/50 flex flex-col gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-24 border border-stone-300 overflow-hidden bg-stone-200 flex-shrink-0 flex items-center justify-center shadow-2xs"
+                         style="border-top-left-radius: 2rem; border-top-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                        @if(!empty($fotoWanita))
+                            <img src="{{ asset('storage/' . $fotoWanita) }}" class="w-full h-full object-cover" alt="Wanita">
+                        @else
+                            <span class="text-[10px] text-stone-400 text-center font-bold">Wanita</span>
+                        @endif
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Foto Mempelai Wanita (Astri)</label>
+                        <input type="file" id="input_foto_wanita" name="foto_wanita" accept="image/*"
+                               class="w-full text-xs text-stone-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-stone-200 file:text-stone-700 hover:file:bg-stone-300 cursor-pointer">
+                    </div>
                 </div>
-                <div class="flex-1">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Foto Mempelai Wanita (Astri)</label>
-                    <input type="file" name="foto_wanita" accept="image/*"
-                           class="w-full text-xs text-stone-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-stone-200 file:text-stone-700 hover:file:bg-stone-300 cursor-pointer">
+                {{-- Cropper Container & Controls --}}
+                <div id="crop_wrap_wanita" class="hidden flex flex-col items-center gap-2 mt-2">
+                    <div class="crop-container" id="container_wanita">
+                        <img id="preview_wanita" src="" alt="Preview">
+                    </div>
+                    <div id="actions_wanita" class="hidden flex gap-2 w-full max-w-[300px]">
+                        <button type="button" id="btn_reset_wanita" class="flex-1 py-1.5 px-3 bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs font-semibold rounded-md transition-colors">Reset</button>
+                        <button type="button" id="btn_crop_wanita" class="flex-1 py-1.5 px-3 bg-amber-700 hover:bg-amber-800 text-white text-xs font-semibold rounded-md transition-colors">Crop &amp; Upload</button>
+                    </div>
                 </div>
             </div>
 
             {{-- Mempelai Pria --}}
-            <div class="p-4 rounded-xl border border-stone-200 bg-stone-50/50 flex items-center gap-4">
-                <div class="w-16 h-24 border border-stone-300 overflow-hidden bg-stone-200 flex-shrink-0 flex items-center justify-center shadow-2xs"
-                     style="border-top-right-radius: 2rem; border-top-left-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
-                    @if(!empty($fotoPria))
-                        <img src="{{ asset('storage/' . $fotoPria) }}" class="w-full h-full object-cover" alt="Pria">
-                    @else
-                        <span class="text-[10px] text-stone-400 text-center font-bold">Pria</span>
-                    @endif
+            <div class="p-4 rounded-xl border border-stone-200 bg-stone-50/50 flex flex-col gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-24 border border-stone-300 overflow-hidden bg-stone-200 flex-shrink-0 flex items-center justify-center shadow-2xs"
+                         style="border-top-right-radius: 2rem; border-top-left-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                        @if(!empty($fotoPria))
+                            <img src="{{ asset('storage/' . $fotoPria) }}" class="w-full h-full object-cover" alt="Pria">
+                        @else
+                            <span class="text-[10px] text-stone-400 text-center font-bold">Pria</span>
+                        @endif
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Foto Mempelai Pria (Ridho)</label>
+                        <input type="file" id="input_foto_pria" name="foto_pria" accept="image/*"
+                               class="w-full text-xs text-stone-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-stone-200 file:text-stone-700 hover:file:bg-stone-300 cursor-pointer">
+                    </div>
                 </div>
-                <div class="flex-1">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Foto Mempelai Pria (Ridho)</label>
-                    <input type="file" name="foto_pria" accept="image/*"
-                           class="w-full text-xs text-stone-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-stone-200 file:text-stone-700 hover:file:bg-stone-300 cursor-pointer">
+                {{-- Cropper Container & Controls --}}
+                <div id="crop_wrap_pria" class="hidden flex flex-col items-center gap-2 mt-2">
+                    <div class="crop-container" id="container_pria">
+                        <img id="preview_pria" src="" alt="Preview">
+                    </div>
+                    <div id="actions_pria" class="hidden flex gap-2 w-full max-w-[300px]">
+                        <button type="button" id="btn_reset_pria" class="flex-1 py-1.5 px-3 bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs font-semibold rounded-md transition-colors">Reset</button>
+                        <button type="button" id="btn_crop_pria" class="flex-1 py-1.5 px-3 bg-amber-700 hover:bg-amber-800 text-white text-xs font-semibold rounded-md transition-colors">Crop &amp; Upload</button>
+                    </div>
                 </div>
-            </div>
-
-            <div class="md:col-span-2 flex justify-end">
-                <button type="submit"
-                        class="px-5 py-2.5 bg-stone-800 hover:bg-stone-700 text-amber-100 font-semibold text-xs rounded-lg transition-all shadow-xs flex items-center gap-2">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                        <polyline points="7 3 7 8 15 8"></polyline>
-                    </svg>
-                    Perbarui Foto Mempelai
-                </button>
             </div>
         </form>
     </div>
@@ -255,26 +294,37 @@
         <p class="text-xs text-stone-500 mb-4">Unggah foto momen bersama / pre-wedding beserta judul keterangan (misal: "BUSANA ADAT KERATON"). Foto akan tampil di slider galeri berbingkai elegan pada halaman undangan.</p>
 
         {{-- Form Upload Galeri --}}
-        <form action="{{ route('admin.galleries.store') }}" method="POST" enctype="multipart/form-data" class="bg-stone-50 p-4 rounded-xl border border-stone-200 mb-6 flex flex-col md:flex-row items-end gap-4">
+        <form action="{{ route('admin.galleries.store') }}" method="POST" enctype="multipart/form-data" class="bg-stone-50 p-4 rounded-xl border border-stone-200 mb-6 flex flex-col gap-4">
             @csrf
-            <div class="w-full md:w-1/2">
-                <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Pilih Foto (Maks 5MB)</label>
-                <input type="file" name="image" accept="image/*" required
-                       class="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-stone-200 file:text-stone-700 hover:file:bg-stone-300 cursor-pointer">
+            <div class="flex flex-col md:flex-row items-end gap-4">
+                <div class="w-full md:w-1/2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Pilih Foto (Maks 5MB)</label>
+                    <input type="file" id="input_gallery_image" name="image" accept="image/*" required
+                           class="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-stone-200 file:text-stone-700 hover:file:bg-stone-300 cursor-pointer">
+                </div>
+                <div class="w-full md:w-1/2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Judul / Keterangan Foto</label>
+                    <input type="text" name="title" placeholder="Contoh: BUSANA ADAT KERATON"
+                           class="w-full px-3 py-2 border border-stone-300 rounded-lg text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                </div>
+                <button type="submit"
+                        class="w-full md:w-auto px-5 py-2.5 bg-stone-800 hover:bg-stone-700 text-amber-100 font-semibold text-xs rounded-lg transition-all shadow-xs flex items-center justify-center gap-2 whitespace-nowrap">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Tambah Foto Galeri
+                </button>
             </div>
-            <div class="w-full md:w-1/2">
-                <label class="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">Judul / Keterangan Foto</label>
-                <input type="text" name="title" placeholder="Contoh: BUSANA ADAT KERATON"
-                       class="w-full px-3 py-2 border border-stone-300 rounded-lg text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
+            {{-- Cropper Container & Controls --}}
+            <div id="crop_wrap_gallery" class="hidden flex flex-col items-center gap-2 mt-2">
+                <div class="crop-container" id="container_gallery">
+                    <img id="preview_gallery" src="" alt="Preview">
+                </div>
+                <div id="actions_gallery" class="hidden flex gap-2 w-full max-w-[300px]">
+                    <button type="button" id="btn_reset_gallery" class="w-full py-1.5 px-3 bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs font-semibold rounded-md transition-colors">Reset Crop Box</button>
+                </div>
             </div>
-            <button type="submit"
-                    class="w-full md:w-auto px-5 py-2.5 bg-stone-800 hover:bg-stone-700 text-amber-100 font-semibold text-xs rounded-lg transition-all shadow-xs flex items-center justify-center gap-2 whitespace-nowrap">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                Tambah Foto Galeri
-            </button>
         </form>
 
         {{-- Grid Foto Galeri Tersimpan --}}
@@ -522,6 +572,148 @@ function copyUrl(url, btn) {
         alert('Gagal menyalin link: ' + url);
     });
 }
+
+function setupCropper(config) {
+    const input = document.getElementById(config.inputId);
+    const wrap = document.getElementById(config.wrapId);
+    const container = document.getElementById(config.containerId);
+    const preview = document.getElementById(config.previewId);
+    const actions = document.getElementById(config.actionsId);
+    const btnReset = document.getElementById(config.btnResetId);
+    const btnCrop = config.btnCropId ? document.getElementById(config.btnCropId) : null;
+
+    if (!input || !preview || !container) return;
+
+    let cropper = null;
+    let isCroppingSubmit = false;
+    const form = input.closest('form');
+
+    input.addEventListener('change', function (e) {
+        const files = e.target.files;
+        if (!files || !files.length) return;
+
+        const file = files[0];
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            preview.src = event.target.result;
+            wrap.classList.remove('hidden');
+            actions.classList.remove('hidden');
+
+            if (cropper) {
+                cropper.destroy();
+            }
+
+            cropper = new Cropper(preview, {
+                aspectRatio: NaN,
+                viewMode: 1,
+                autoCropArea: 1,
+                ready() {
+                    const cData = cropper.getContainerData();
+                    cropper.setCropBoxData({
+                        left: 0,
+                        top: 0,
+                        width: cData.width,
+                        height: cData.height
+                    });
+                }
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+
+    if (btnReset) {
+        btnReset.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (!cropper) return;
+            const cData = cropper.getContainerData();
+            cropper.reset();
+            cropper.setCropBoxData({
+                left: 0,
+                top: 0,
+                width: cData.width,
+                height: cData.height
+            });
+        });
+    }
+
+    function processCropAndSubmit() {
+        if (!cropper || isCroppingSubmit || !form) return;
+
+        isCroppingSubmit = true;
+
+        const canvas = cropper.getCroppedCanvas({
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high'
+        });
+
+        const originalFile = input.files[0];
+        const mimeType = (originalFile && originalFile.type) ? originalFile.type : 'image/jpeg';
+        const quality = (mimeType === 'image/jpeg' || mimeType === 'image/webp') ? 0.98 : undefined;
+
+        canvas.toBlob(function (blob) {
+            if (!blob) {
+                isCroppingSubmit = false;
+                return;
+            }
+
+            const fileName = originalFile ? originalFile.name : 'photo.jpg';
+            const croppedFile = new File([blob], fileName, { type: mimeType, lastModified: Date.now() });
+
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(croppedFile);
+            input.files = dataTransfer.files;
+
+            form.submit();
+        }, mimeType, quality);
+    }
+
+    if (btnCrop) {
+        btnCrop.addEventListener('click', function (e) {
+            e.preventDefault();
+            processCropAndSubmit();
+        });
+    }
+
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            if (cropper && !isCroppingSubmit) {
+                e.preventDefault();
+                processCropAndSubmit();
+            }
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    setupCropper({
+        inputId: 'input_foto_wanita',
+        wrapId: 'crop_wrap_wanita',
+        containerId: 'container_wanita',
+        previewId: 'preview_wanita',
+        actionsId: 'actions_wanita',
+        btnResetId: 'btn_reset_wanita',
+        btnCropId: 'btn_crop_wanita'
+    });
+
+    setupCropper({
+        inputId: 'input_foto_pria',
+        wrapId: 'crop_wrap_pria',
+        containerId: 'container_pria',
+        previewId: 'preview_pria',
+        actionsId: 'actions_pria',
+        btnResetId: 'btn_reset_pria',
+        btnCropId: 'btn_crop_pria'
+    });
+
+    setupCropper({
+        inputId: 'input_gallery_image',
+        wrapId: 'crop_wrap_gallery',
+        containerId: 'container_gallery',
+        previewId: 'preview_gallery',
+        actionsId: 'actions_gallery',
+        btnResetId: 'btn_reset_gallery'
+    });
+});
 </script>
 
 </body>
