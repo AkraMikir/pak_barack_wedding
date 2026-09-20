@@ -477,10 +477,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 thumbs.forEach((thumb, idx) => {
                     if (idx === currentIndex) {
-                        thumb.className = 'gallery-thumb-btn relative flex-shrink-0 w-12 h-14 sm:w-14 sm:h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 border-[#8B6C3F] scale-105 shadow-sm';
+                        thumb.className = 'gallery-thumb-btn relative flex-shrink-0 w-11 h-14 sm:w-12 sm:h-15 rounded-lg overflow-hidden border-2 transition-all duration-200 border-[#8B6C3F] scale-105 shadow-sm';
                         thumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                     } else {
-                        thumb.className = 'gallery-thumb-btn relative flex-shrink-0 w-12 h-14 sm:w-14 sm:h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 border-transparent opacity-60 hover:opacity-100';
+                        thumb.className = 'gallery-thumb-btn relative flex-shrink-0 w-11 h-14 sm:w-12 sm:h-15 rounded-lg overflow-hidden border-2 transition-all duration-200 border-transparent opacity-60 hover:opacity-100';
                     }
                 });
             }

@@ -501,12 +501,20 @@ body:not(.invitation-opened) #main-content .reveal-scale-in {
 
 /* ── Guestbook Feed ───────────────────────────────────── */
 .wish-card {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(223, 211, 189, 0.75);
-    border-radius: 0;
-    padding: 10px 0 16px 0;
-    box-shadow: none;
+    background: #F7F2E7;
+    background: rgba(247, 242, 231, 0.92);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(216, 199, 176, 0.85);
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 4px 14px rgba(78, 59, 42, 0.06), 0 1px 3px rgba(78, 59, 42, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wish-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(78, 59, 42, 0.09), 0 2px 4px rgba(78, 59, 42, 0.05);
 }
 
 .badge-kehadiran {
@@ -518,7 +526,7 @@ body:not(.invitation-opened) #main-content .reveal-scale-in {
     border-radius: 6px;
     border: 1px solid rgba(184, 158, 126, 0.65);
     color: #8B6C3F;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.4);
     text-transform: uppercase;
     display: inline-block;
 }
@@ -562,6 +570,7 @@ body:not(.invitation-opened) #main-content .reveal-scale-in {
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(161,120,57,0.3) transparent;
+    padding: 6px 4px 12px 4px;
 }
 
 /* ── Floating Music Disc Animation ───────────────────── */
