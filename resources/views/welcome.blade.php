@@ -558,8 +558,15 @@
     {{-- ────────────────────────────────────────────────
          SECTION 2: AYAT SUCI
          ──────────────────────────────────────────────── --}}
-    <section id="section-ayat" data-scroll-section class="relative w-full overflow-hidden flex flex-col items-center text-center pt-8 pb-0"
+    <section id="section-ayat" data-scroll-section class="relative w-full overflow-hidden flex flex-col items-center text-center pt-8 pb-4"
              style="background-color:#FFFCF7;">
+
+        {{-- Background Motif Ayat Suci --}}
+        <div class="absolute inset-0 pointer-events-none select-none z-0">
+            <img src="{{ asset('assets-website/ayat-suci/backgrond-ayatsuci.svg') }}"
+                 class="w-full h-full object-cover select-none"
+                 alt="Background Ayat Suci">
+        </div>
 
         {{-- Ornamen Atas (Header Motif Doa) --}}
         <div data-scroll class="reveal-down ornament-border-slow relative z-10 w-full flex justify-center mb-3 sm:mb-4 px-4">
@@ -591,10 +598,9 @@
         </div>
 
         {{-- Area Bawah: Ornamen Daun Kiri & Kanan Flanking QS. AR-RUM : 21 --}}
-        <div class="relative w-full flex flex-col items-center justify-center pt-3 pb-6 min-h-[110px] overflow-hidden">
+        <div class="relative w-full flex flex-col items-center justify-center pt-2 pb-6 min-h-[120px] z-10">
             {{-- Ornamen Daun Kiri (Tampil Lebih Lambat Lebih Awal) --}}
-            <div data-scroll class="reveal-left ornament-leaf-left absolute left-0 bottom-0 pointer-events-none z-0"
-                 style="width: 125px;">
+            <div data-scroll class="reveal-left ornament-leaf-left absolute left-0 bottom-0 pointer-events-none z-10 w-[130px] sm:w-[138px]">
                 <div class="anim-sway-leaf" style="transform-origin: bottom left;">
                     <img src="{{ asset('assets-website/ayat-suci/daun-kiri-doa.svg') }}"
                          class="w-full h-auto object-contain select-none"
@@ -603,7 +609,7 @@
             </div>
 
             {{-- Teks Surat & Pembatas Garis Emas --}}
-            <div data-scroll class="reveal-up delay-500 relative z-10 flex flex-col items-center px-4">
+            <div data-scroll class="reveal-up delay-500 relative z-20 flex flex-col items-center px-4">
                 <p class="uppercase tracking-widest font-bold"
                    style="font-family:'Cinzel',serif;font-size:12px;color:#84683A;letter-spacing:0.2em;">
                     — QS. AR-RUM : 21 —
@@ -612,8 +618,7 @@
             </div>
 
             {{-- Ornamen Daun Kanan (Tampil Bergantian Setelah Daun Kiri) --}}
-            <div data-scroll class="reveal-right ornament-leaf-right absolute right-0 bottom-0 pointer-events-none z-0"
-                 style="width: 125px;">
+            <div data-scroll class="reveal-right ornament-leaf-right absolute right-0 bottom-0 pointer-events-none z-10 w-[130px] sm:w-[138px]">
                 <div class="anim-sway-leaf" style="transform-origin: bottom right;">
                     <img src="{{ asset('assets-website/ayat-suci/daun-kanan-doa.svg') }}"
                          class="w-full h-auto object-contain select-none"
@@ -1527,6 +1532,37 @@
 
 </div><!-- /data-scroll-container -->
 
+{{-- ════════════════════════════════════════════════════
+     BACKGROUND MUSIC & FLOATING DISC CONTROLLER
+     ════════════════════════════════════════════════════ --}}
+<audio id="wedding-music" loop preload="auto">
+    <source src="{{ asset('music/Rizky Febian Feat. Mahalini - Bermuara [Official Lyric Video].mp3') }}" type="audio/mpeg">
+</audio>
+
+<div id="music-container"
+     class="fixed top-5 right-5 z-40 transition-all duration-500 opacity-0 pointer-events-none transform -translate-y-2">
+    <button id="music-toggle-btn"
+            type="button"
+            class="flex items-center justify-center w-10 h-10 rounded-full focus:outline-none shadow-md transition-transform hover:scale-105 active:scale-95 cursor-pointer select-none"
+            aria-label="Putar atau jeda musik"
+            title="Putar atau jeda musik"
+            style="background: rgba(46, 29, 19, 0.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(201, 168, 107, 0.55); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+
+        {{-- Saat Memutar: Piringan Vinyl Vektor Minimalis Berputar --}}
+        <svg id="music-icon-play" class="w-6 h-6 anim-disc-spin text-[#C9A86B]" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.2" fill="#1C110A" />
+            <circle cx="12" cy="12" r="7.5" stroke="#6B4D38" stroke-width="0.8" stroke-dasharray="2 1.5" />
+            <circle cx="12" cy="12" r="5.5" stroke="#6B4D38" stroke-width="0.8" />
+            <circle cx="12" cy="12" r="3.2" fill="#C9A86B" />
+            <circle cx="12" cy="12" r="1.1" fill="#1C110A" />
+        </svg>
+
+        {{-- Saat Jeda: Icon Segitiga Play Emas Bersih --}}
+        <svg id="music-icon-pause" class="hidden w-4 h-4 text-[#C9A86B] ml-0.5" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="6,4 20,12 6,20" />
+        </svg>
+    </button>
+</div>
 
 </body>
 </html>

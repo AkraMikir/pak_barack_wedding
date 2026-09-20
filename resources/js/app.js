@@ -73,8 +73,90 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('invitation-opened');
     }
 
+    // ── Background Music & Floating Disc Player ───────────
+    const musicAudio     = document.getElementById('wedding-music');
+    const musicContainer = document.getElementById('music-container');
+    const musicToggleBtn = document.getElementById('music-toggle-btn');
+    const musicIconPlay  = document.getElementById('music-icon-play');
+    const musicIconPause = document.getElementById('music-icon-pause');
+    let isMusicPlaying   = false;
+
+    function updateMusicUI(playing) {
+        if (playing) {
+            if (musicIconPlay) {
+                musicIconPlay.classList.remove('hidden');
+                musicIconPlay.classList.remove('paused');
+            }
+            if (musicIconPause) {
+                musicIconPause.classList.add('hidden');
+            }
+            if (musicToggleBtn) {
+                musicToggleBtn.setAttribute('aria-label', 'Jeda musik');
+                musicToggleBtn.setAttribute('title', 'Jeda musik');
+            }
+        } else {
+            if (musicIconPlay) {
+                musicIconPlay.classList.add('hidden');
+                musicIconPlay.classList.add('paused');
+            }
+            if (musicIconPause) {
+                musicIconPause.classList.remove('hidden');
+            }
+            if (musicToggleBtn) {
+                musicToggleBtn.setAttribute('aria-label', 'Putar musik');
+                musicToggleBtn.setAttribute('title', 'Putar musik');
+            }
+        }
+    }
+
+    function playMusic() {
+        if (!musicAudio) return;
+        musicAudio.play().then(() => {
+            isMusicPlaying = true;
+            updateMusicUI(true);
+        }).catch((err) => {
+            console.warn('Autoplay prevented by browser:', err);
+            isMusicPlaying = false;
+            updateMusicUI(false);
+        });
+    }
+
+    function pauseMusic() {
+        if (!musicAudio) return;
+        musicAudio.pause();
+        isMusicPlaying = false;
+        updateMusicUI(false);
+    }
+
+    function toggleMusic() {
+        if (!musicAudio) return;
+        if (isMusicPlaying) {
+            pauseMusic();
+        } else {
+            playMusic();
+        }
+    }
+
+    function showMusicControl() {
+        if (musicContainer) {
+            musicContainer.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-3');
+            musicContainer.classList.add('opacity-100', 'translate-y-0');
+        }
+    }
+
+    if (musicToggleBtn) {
+        musicToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleMusic();
+        });
+    }
+
     bukaBtns.forEach(btn => {
         btn.addEventListener('click', () => {
+            playMusic();
+            showMusicControl();
+
             const guestId = document.body.dataset.guestId;
             if (guestId) {
                 fetch(`/guest/${guestId}/open`, {
@@ -120,6 +202,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    if (!coverOverlay) {
+        showMusicControl();
+    }
 
     // ── Section Mempelai 50% Scroll Gate ─────────────────
     const sectionMempelai = document.getElementById('section-mempelai');

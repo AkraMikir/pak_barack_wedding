@@ -563,3 +563,24 @@ body:not(.invitation-opened) #main-content .reveal-scale-in {
     scrollbar-width: thin;
     scrollbar-color: rgba(161,120,57,0.3) transparent;
 }
+
+/* ── Floating Music Disc Animation ───────────────────── */
+@keyframes spinSlow {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.anim-disc-spin {
+    animation: spinSlow 4s linear infinite;
+    transform-origin: center center;
+}
+
+.anim-disc-spin.paused {
+    animation-play-state: paused;
+}
+
+
