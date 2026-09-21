@@ -4,8 +4,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Undangan Pernikahan Astri & Ridho – 23 Oktober 2026</title>
+    <title>{{ isset($guest) && $guest ? 'Undangan Pernikahan Astri & Ridho untuk ' . $guest->name : 'Undangan Pernikahan Astri & Ridho – 23 Oktober 2026' }}</title>
     <meta name="description" content="Dengan memohon rahmat & ridho Allah SWT, kami mengundang Anda untuk hadir di pernikahan Sulastri & Ridho Iriano Sudarmazena.">
+
+    <!-- Open Graph / Meta Preview (WhatsApp, Facebook, dsb) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ isset($guest) && $guest ? 'https://wedding-astri-ridho.neovala.com/to/' . $guest->slug : 'https://wedding-astri-ridho.neovala.com' }}">
+    <meta property="og:title" content="{{ isset($guest) && $guest ? 'Undangan Pernikahan Astri & Ridho untuk ' . $guest->name : 'Undangan Pernikahan Astri & Ridho – 23 Oktober 2026' }}">
+    <meta property="og:description" content="Dengan memohon rahmat & ridho Allah SWT, kami mengundang Anda untuk hadir di pernikahan Sulastri & Ridho Iriano Sudarmazena.">
+    <!-- Menentukan foto yang akan muncul (Foto prewedding 2 dari galery) -->
+    <meta property="og:image" content="https://wedding-astri-ridho.neovala.com/assets-website/galery/prewed2.jpg">
+    <meta property="og:image:secure_url" content="https://wedding-astri-ridho.neovala.com/assets-website/galery/prewed2.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="844">
+    <meta property="og:image:height" content="1185">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ isset($guest) && $guest ? 'Undangan Pernikahan Astri & Ridho untuk ' . $guest->name : 'Undangan Pernikahan Astri & Ridho – 23 Oktober 2026' }}">
+    <meta name="twitter:description" content="Dengan memohon rahmat & ridho Allah SWT, kami mengundang Anda untuk hadir di pernikahan Sulastri & Ridho Iriano Sudarmazena.">
+    <meta name="twitter:image" content="https://wedding-astri-ridho.neovala.com/assets-website/galery/prewed2.jpg">
 
     {{-- Preconnect fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
