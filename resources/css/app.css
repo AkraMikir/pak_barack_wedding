@@ -501,20 +501,20 @@ body:not(.invitation-opened) #main-content .reveal-scale-in {
 
 /* ── Guestbook Feed ───────────────────────────────────── */
 .wish-card {
-    background: #F7F2E7;
-    background: rgba(247, 242, 231, 0.92);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(216, 199, 176, 0.85);
+    background: rgba(247, 242, 231, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border: 1px solid rgba(216, 199, 176, 0.7);
     border-radius: 12px;
     padding: 14px 16px;
-    box-shadow: 0 4px 14px rgba(78, 59, 42, 0.06), 0 1px 3px rgba(78, 59, 42, 0.04);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 14px rgba(78, 59, 42, 0.05), 0 1px 3px rgba(78, 59, 42, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .wish-card:hover {
+    background: rgba(247, 242, 231, 0.7);
     transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(78, 59, 42, 0.09), 0 2px 4px rgba(78, 59, 42, 0.05);
+    box-shadow: 0 6px 18px rgba(78, 59, 42, 0.08), 0 2px 4px rgba(78, 59, 42, 0.04);
 }
 
 .badge-kehadiran {

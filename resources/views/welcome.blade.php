@@ -713,7 +713,7 @@
                     </div>
                 </div>
                 <p class="mt-3" style="font-family:'Great Vibes',cursive;font-size:36px;color:#362B24;">Ridho</p>
-                <p style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.1em;">( Ridho )</p>
+                <p style="font-family:'Cinzel',serif;font-size:11px;color:#84683A;letter-spacing:0.1em;">( Barak )</p>
                 <div class="mt-1 text-center min-h-[55px] flex flex-col justify-start">
                     <p class="text-xs" style="font-family:'Plus Jakarta Sans',sans-serif;color:#6E5B4F;">Putra dari Pasangan:</p>
                     <p class="text-xs font-medium leading-tight" style="font-family:'Plus Jakarta Sans',sans-serif;color:#4A3B32;">Bpk. Wahyu Darma Putra (alm)<br>&amp; Ibu Yeni Handayani</p>
