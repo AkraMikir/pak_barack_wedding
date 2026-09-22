@@ -1,4 +1,4 @@
-﻿# Product Requirements Document (PRD)
+# Product Requirements Document (PRD)
 ## Web Undangan Pernikahan — Astri & Ridho
 
 **Versi:** 1.0  
@@ -82,8 +82,8 @@ Seluruh rangkaian acara (Akad & Resepsi) diselenggarakan di lokasi yang sama.
 
 | Pemilik | Bank | Nomor Rekening |
 |---|---|---|
-| Ridho Iriano Sudarmazena | BCA | *(diisi saat implementasi)* |
-| Sulastri | BCA | *(diisi saat implementasi)* |
+| Ridho Iriano Sudarmazena | BCA | 6755209451 |
+| Sulastri | BCA | 7392034636 |
 
 **Pengiriman Kado Fisik:**
 a.n. Sulastri / Keluarga Bpk. Yasmudin
